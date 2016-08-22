@@ -21,10 +21,9 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.google.zxing.WriterException;
 
 import java.text.DecimalFormat;
-import com.gzcz.rtchen.positionmarker.ZXingQR;
-import com.google.zxing.WriterException;
 
 /**
  * Created by RtChen on 2016/7/18.
@@ -259,7 +258,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
+     * to the activity and potentially other fragments contained
+     * in that
      * activity.
      * <p/>
      * See the Android Training lesson <a href=
