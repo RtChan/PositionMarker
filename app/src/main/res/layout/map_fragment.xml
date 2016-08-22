@@ -3,6 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/iv_qr_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="4" />
+
     <com.amap.api.maps2d.MapView
         android:id="@+id/map"
         android:layout_width="wrap_content"
@@ -33,7 +41,20 @@
             android:id="@+id/locate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:text="Locate" />
+=======
+            android:text="Locate"
+            android:layout_weight="3"/>
+
+        <Button
+            android:id="@+id/btn_add_qrcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QRcode"
+            android:layout_weight="3"/>
+
+>>>>>>> master
     </LinearLayout>
 
 </RelativeLayout>
