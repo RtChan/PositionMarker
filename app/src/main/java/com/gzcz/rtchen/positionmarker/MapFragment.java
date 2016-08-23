@@ -37,6 +37,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     Button mButtonLocate = null;
 
     /* Fragment 用 */
+    View mView = null;
     private OnFragmentInteractionListener mListener;
 
     /* ZXingQR用 */
@@ -97,16 +98,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("WHERE", "MapFragment onCreate()");
-//        mButtonLocate = (Button) getView().findViewById(R.id.locate);
-//        mButtonLocate.setOnClickListener(this);
-
-        //获取地图控件引用
-//        mMapView = (MapView) getView().findViewById(R.id.map);
-        //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，实现地图生命周期管理
-//        mMapView.onCreate(savedInstanceState);
-
-        /* 初始化SDK控件 */
-//        initMapView();
     }
 
     /* ---- 更新UI 方法 ---- */
@@ -180,20 +171,20 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.map_fragment, container, false);
+        mView = inflater.inflate(R.layout.map_fragment, container, false);
 
-        mButtonLocate = (Button) view.findViewById(R.id.locate);
+        mButtonLocate = (Button) mView.findViewById(R.id.locate);
         mButtonLocate.setOnClickListener(this);
-        mMapView = (MapView) view.findViewById(R.id.map);
+        mMapView = (MapView) mView.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
 
-        mButtonQRcode = (Button)view.findViewById(R.id.btn_add_qrcode);
+        mButtonQRcode = (Button)mView.findViewById(R.id.btn_add_qrcode);
         mButtonQRcode.setOnClickListener(this);
-        qrImageView = (ImageView)view.findViewById(R.id.iv_qr_image);
+        qrImageView = (ImageView)mView.findViewById(R.id.iv_qr_image);
 
         initMapView();
 
-        return view;
+        return mView;
     }
 
     public void onButtonPressed(Uri uri) {

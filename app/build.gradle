@@ -22,10 +22,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:design:23.3.0'
     compile files('libs/AMap_2DMap_V2.9.0_20160525.jar')
     compile files('libs/AMap_Search_V3.3.0_20160616.jar')
     compile project(':dJISDKLIB')
     compile files('libs/core-3.2.2-20160624.203811-4.jar')
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:support-v4:23.4.0'
 }

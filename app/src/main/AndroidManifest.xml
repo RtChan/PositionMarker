@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gzcz.rtchen.positionmarker">
 
-    <!--地图包、搜索包需要的基础权限-->
+    <!-- 地图包、搜索包需要的基础权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!--大疆SDK的USB权限-->
+    <!-- 大疆SDK的USB权限 -->
     <uses-feature
         android:name="android.hardware.usb.host"
         android:required="false" />
@@ -26,21 +26,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--高德地图 API KEY-->
+        <!-- 高德地图 API KEY -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="b7049cd2390e45ac014d49b1295a50ca">
-        </meta-data>
-        <!--大疆SDK API KEY-->
+            android:value="b7049cd2390e45ac014d49b1295a50ca" />
+        <!-- 大疆SDK API KEY -->
         <uses-library android:name="com.android.future.usb.accessory" />
+
         <meta-data
             android:name="com.dji.sdk.API_KEY"
             android:value="c046bd6ffff2590a8a933ab2" />
 
-        <!--大疆SDK类-->
+        <!-- 大疆SDK类 -->
         <activity
             android:name="dji.sdk.SDKManager.DJIAoaControllerActivity"
-            android:theme="@android:style/Theme.Translucent" >
+            android:theme="@android:style/Theme.Translucent">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
             </intent-filter>
@@ -49,8 +49,8 @@
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
                 android:resource="@xml/accessory_filter" />
         </activity>
-        <service android:name="dji.sdk.SDKManager.DJIGlobalService" >
-        </service>
+
+        <service android:name="dji.sdk.SDKManager.DJIGlobalService" />
 
         <activity
             android:name=".MainActivity"
