@@ -34,7 +34,9 @@ import dji.sdk.base.DJIBaseProduct;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
             MapFragment.OnFragmentInteractionListener,
-            ProjectFragment.OnFragmentInteractionListener {
+            ProjectFragment.OnFragmentInteractionListener,
+            PointFragment.OnFragmentInteractionListener,
+            PointList.OnFragmentInteractionListener{
 
 
     /* 声明大疆SDK控件 */
@@ -208,7 +210,9 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = MapFragment.class;
         } else if (id == R.id.nav_gallery){
             fragmentClass = ProjectFragment.class;
-        } else {
+        } else if (id == R.id.nav_point){
+            fragmentClass = PointFragment.class;
+        }else {
             fragmentClass = MapFragment.class;
         }
 //        } else if (id == R.id.nav_gallery) {
