@@ -2,6 +2,7 @@ package com.gzcz.rtchen.positionmarker;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.google.zxing.WriterException;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 /**
  * Created by RtChen on 2016/7/18.
@@ -33,7 +35,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     MapView mMapView = null;
     AMap mAMap = null;
     Marker mDroneMarker = null;
-
     Button mButtonLocate = null;
 
     /* Fragment 用 */
@@ -46,6 +47,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     ImageView qrImageView = null;
     double mDroneLocationLat;
     double mDroneLocationLng;
+
+    /* DataManager 用 */
+    DataManager dm = null;
 
     public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
@@ -184,6 +188,10 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
 
         initMapView();
 
+
+        // TODO：删除此测试代码
+        dm = new DataManager(getActivity());
+
         return mView;
     }
 
@@ -260,5 +268,17 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    // TODO:删除此测试用代码
+    public void test(){
+        ArrayList<String> myProjectList = dm.getProjectsList();
+        dm.addProject("Prj1");
+        dm.setCurrentProject(1);
+        ArrayList<Point>  myPointList   = dm.getPointsList();
+        dm.addPoint(new Point(1,1,"DotA"));
+        dm.addPoint(new Point(2,2,"DotA"));
+        dm.addPoint(new Point(3,3,"DotA"));
+
     }
 }
