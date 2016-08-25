@@ -26,6 +26,7 @@ import com.google.zxing.WriterException;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.R;
 import com.gzcz.rtchen.positionmarker.ZXingQR;
+import com.gzcz.rtchen.positionmarker.ZXingQRFragment;
 
 import java.text.DecimalFormat;
 

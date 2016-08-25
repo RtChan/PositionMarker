@@ -125,7 +125,7 @@ public class ProjectFragment extends Fragment
 
         list_view_prj.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 // TODO: 将字符串放入string.xml中
                 builder.setTitle("删除该工程？");
@@ -133,13 +133,15 @@ public class ProjectFragment extends Fragment
                 builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO：删除工程
+                        MainActivity.dm.removeProject((String) list_view_prj.getItemAtPosition(position));
+                        ArrayAdapter_prj.notifyDataSetChanged();
                     }
                 });
                 builder.setNeutralButton("重命名", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO：重命名工程
+                        ArrayAdapter_prj.notifyDataSetChanged();
                     }
                 });
                 builder.setIcon(R.mipmap.ic_launcher);
