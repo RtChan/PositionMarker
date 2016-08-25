@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
             MapFragment.OnFragmentInteractionListener,
             ProjectFragment.OnFragmentInteractionListener,
-            PointListFragment.OnFragmentInteractionListener{
+            PointListFragment.OnFragmentInteractionListener,
+            ZXingQRFragment.OnFragmentInteractionListener{
 
 
     /* 声明大疆SDK控件 */

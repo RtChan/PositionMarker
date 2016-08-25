@@ -109,7 +109,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         MainActivity activity = (MainActivity) getActivity();
         Fragment fragment = null;
         Class fragmentClass = null;
-        fragmentClass = PointListFragment.class;
 
         switch (v.getId()) {
             case R.id.locate:{
@@ -137,20 +136,22 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
                     MainActivity c = (MainActivity)getContext();
                     Toast.makeText(c, "Text can not be empty", Toast.LENGTH_SHORT).show();
                 }
+
+                fragmentClass = ZXingQRFragment.class;
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
                 break;
             }
 
             default:
                 break;
         }
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
     }
 
     private void updateUI() {
