@@ -17,7 +17,7 @@ public class DataManager {
     private Context mContext = null;
 
     private ArrayList<String> mProjectsList = null;
-    private ArrayList<Point> mPointsList = null;
+    private ArrayList<PositionPoint> mPointsList = null;
     private String mCurrentProject = new String();
 
     public DataManager(Context c) {
@@ -37,10 +37,12 @@ public class DataManager {
     }
 
     public ArrayList<String> getProjectsList() {
+        readProjectsListFromFile();
         return mProjectsList;
     }
 
-    public ArrayList<Point> getPointsList() {
+    public ArrayList<PositionPoint> getPointsList() {
+        readPointsListFromeFile();
         return mPointsList;
     }
 
@@ -49,19 +51,31 @@ public class DataManager {
         readPointsListFromeFile();
     }
 
-    public void setCurrentProject(int index) {
-        this.mCurrentProject = mPointsList.get(index).toString();
+    public int setCurrentProject(int index) {
+        // 输入错误
+        if (index <= 0) {
+            mCurrentProject = null;
+            return -1;
+        }
+        // 索引越界
+        if (index > mProjectsList.size()) {
+            mCurrentProject = null;
+            return -1;
+        }
+        // 正常
+        this.mCurrentProject = mProjectsList.get(index - 1).toString();
         readPointsListFromeFile();
+        return index;
     }
 
     public int addProject(String name) {
         // 工程名列表未被初始化
         if (null == mProjectsList) return -1;
         // 工程名列表为空
-        if (mProjectsList.isEmpty()) {
-            mProjectsList.add(name);
-            saveProjectsListToFile();
-        }
+//        if (mProjectsList.isEmpty()) {
+//            mProjectsList.add(name);
+//            saveProjectsListToFile();
+//        }
         // 判断工程是否已存在列表当中
         if (mProjectsList.contains(name)) {
             ;
@@ -75,7 +89,7 @@ public class DataManager {
             editor.apply();
         }
         // 返回工程名在列表中的索引
-        return mProjectsList.indexOf(name);
+        return mProjectsList.indexOf(name) + 1;
     }
 
     public int removeProject(String name) {
@@ -93,7 +107,7 @@ public class DataManager {
         }
     }
 
-    public int addPoint(Point p) {
+    public int addPoint(PositionPoint p) {
         // 点列表未被初始化
         if (null == mPointsList) return -1;
         // 未设定当前操作的工程
@@ -148,7 +162,7 @@ public class DataManager {
         SharedPreferences.Editor editor = sp.edit();
         int i = 0;
         try {
-            for (Point p : mPointsList) {
+            for (PositionPoint p : mPointsList) {
                 i += 1;
                 editor.putString(Integer.toString(i), getJsonObjectFromPoint(p).toString());
             }
@@ -181,7 +195,7 @@ public class DataManager {
 
         String s = null;
         try {
-            for (i = 1; i < total; ++i) {
+            for (i = 1; i <= total; ++i) {
                 s = sp.getString(Integer.toString(i), "");
                 list.add(s);
             }
@@ -194,8 +208,8 @@ public class DataManager {
     }
 
     private void readPointsListFromeFile() {
-        Point p = new Point();
-        ArrayList<Point> list = new ArrayList<>();
+        PositionPoint p = new PositionPoint();
+        ArrayList<PositionPoint> list = new ArrayList<>();
 
         SharedPreferences sp = mContext.getSharedPreferences(mCurrentProject, Context.MODE_PRIVATE);
 
@@ -211,7 +225,7 @@ public class DataManager {
 
         String s = null;
         try {
-            for (i = 1; i < total; ++i) {
+            for (i = 1; i <= total; ++i) {
                 s = sp.getString(Integer.toString(i), "");
                 list.add(getPointFromJsonObject(s));
             }
@@ -226,7 +240,7 @@ public class DataManager {
     }
 
     @Nullable
-    private JSONObject getJsonObjectFromPoint(Point p) {
+    private JSONObject getJsonObjectFromPoint(PositionPoint p) {
         JSONObject mJsonObj = new JSONObject();
         try {
             mJsonObj.put("Latitude", p.Latitude);
@@ -242,9 +256,9 @@ public class DataManager {
     }
 
     @Nullable
-    private Point getPointFromJsonObject(String js) {
+    private PositionPoint getPointFromJsonObject(String js) {
         JSONObject mJsonObj = null;
-        Point mPoint = null;
+        PositionPoint mPoint = null;
         double mLat;
         double mLng;
         String mStr;
@@ -254,7 +268,7 @@ public class DataManager {
             mLat = mJsonObj.getDouble("Latitude");
             mLng = mJsonObj.getDouble("Longitude");
             mStr = mJsonObj.getString("DotName");
-            mPoint = new Point(mLat, mLng, mStr);
+            mPoint = new PositionPoint(mLat, mLng, mStr);
         } catch (JSONException e) {
             e.printStackTrace();
             mPoint = null;

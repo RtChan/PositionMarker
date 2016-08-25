@@ -2,7 +2,6 @@ package com.gzcz.rtchen.positionmarker;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,7 +24,6 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.google.zxing.WriterException;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 /**
  * Created by RtChen on 2016/7/18.
@@ -115,6 +113,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
                 updateDroneLocation();
                 cameraUpdate();
                 updateUI();
+                test();
                 break;
             }
 
@@ -191,6 +190,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
 
         // TODO：删除此测试代码
         dm = new DataManager(getActivity());
+
 
         return mView;
     }
@@ -272,13 +272,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
 
     // TODO:删除此测试用代码
     public void test(){
-        ArrayList<String> myProjectList = dm.getProjectsList();
-        dm.addProject("Prj1");
-        dm.setCurrentProject(1);
-        ArrayList<Point>  myPointList   = dm.getPointsList();
-        dm.addPoint(new Point(1,1,"DotA"));
-        dm.addPoint(new Point(2,2,"DotA"));
-        dm.addPoint(new Point(3,3,"DotA"));
+
+
 
     }
 }
