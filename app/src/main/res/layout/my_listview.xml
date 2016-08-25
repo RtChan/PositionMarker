@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="序号"
+        android:id="@+id/mtv_num"
+        android:layout_alignBottom="@+id/mcb"
+        android:layout_alignParentStart="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAlignment="gravity"
+        android:singleLine="false"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点名"
+        android:id="@+id/mtv_dotname"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/mtv_num" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点序号"
+        android:id="@+id/mtv_dotnum"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/mtv_dotname" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="经度"
+        android:id="@+id/mtv_latitude"
+        android:layout_below="@+id/mtv_dotnum"
+        android:layout_alignEnd="@+id/mtv_dotnum" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="纬度"
+        android:id="@+id/mtv_longitude"
+        android:layout_alignBottom="@+id/mtv_num"
+        android:layout_toEndOf="@+id/mtv_num" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/mcb"
+        android:checked="false" />
+
+</RelativeLayout>

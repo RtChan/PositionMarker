@@ -5,9 +5,9 @@ package com.gzcz.rtchen.positionmarker;
  * Created by Rt Chen on 2016/8/23.
  */
 public class PositionPoint {
-    double Latitude;
-    double Longitude;
-    String DotName;
+    protected double Latitude;
+    protected double Longitude;
+    protected String DotName;
 
     public PositionPoint() {
         Latitude = 180.0;
