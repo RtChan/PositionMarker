@@ -14,4 +14,7 @@
     <string name="menu_map">地图视图</string>
     <string name="menu_point">坐标列表</string>
 
+    <!-- ProjectFragment 元素 -->
+    <string name="btn_add_prj">添加工程</string>
+
 </resources>

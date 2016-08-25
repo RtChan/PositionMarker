@@ -9,16 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -44,9 +42,11 @@ public class ProjectFragment extends Fragment
     private OnFragmentInteractionListener mListener;
 
     private EditText edit_view_prj;
-    ArrayList<Map<String, Object>> Array_List_prj = new ArrayList<Map<String, Object>>();
+//    ArrayList<Map<String, Object>> Array_List_prj = new ArrayList<Map<String, Object>>();
+    ArrayList<String> Array_List_prj = null;
     ListView list_view_prj = null;
-    SimpleAdapter Simple_Adapter_prj = null;
+    //SimpleAdapter Simple_Adapter_prj = null;
+    ArrayAdapter ArrayAdapter_prj = null;
     Button btn_add_prj;
 
     public ProjectFragment() {
@@ -90,10 +90,14 @@ public class ProjectFragment extends Fragment
         btn_add_prj = (Button) mView.findViewById(R.id.btn_add_prj);
         btn_add_prj.setOnClickListener(this);
 
-        MainActivity c = (MainActivity) getContext();
-        Simple_Adapter_prj = new SimpleAdapter(c, Array_List_prj, android.R.layout.simple_expandable_list_item_2, new String[]{"prj", "date"}, new int[]{android.R.id.text1, android.R.id.text2});
-        list_view_prj.setAdapter(Simple_Adapter_prj);
+        Array_List_prj = MainActivity.dm.getProjectsList();
 
+        MainActivity c = (MainActivity) getContext();
+//        Simple_Adapter_prj = new SimpleAdapter(c, Array_List_prj, android.R.layout.simple_expandable_list_item_2, new String[]{"prj", "date"}, new int[]{android.R.id.text1, android.R.id.text2});
+        ArrayAdapter_prj = new ArrayAdapter(c, android.R.layout.simple_list_item_1, Array_List_prj);
+
+//        list_view_prj.setAdapter(Simple_Adapter_prj);
+        list_view_prj.setAdapter(ArrayAdapter_prj);
 
         list_view_prj.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -114,6 +118,9 @@ public class ProjectFragment extends Fragment
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
             }
         });
+
+        /* 读取 DataManager */
+//        MainActivity.dm.getProjectsList();
 
         // Inflate the layout for this fragment
         return mView;
@@ -151,12 +158,14 @@ public class ProjectFragment extends Fragment
         Date curDate = new Date(System.currentTimeMillis());
         String str = formatter.format(curDate);
 
-        Map<String,Object> item = new HashMap<String, Object>();
-        item.put("prj", edit_view_prj.getText().toString());
-        item.put("date", str);
-        Array_List_prj.add(item);
+//        Map<String,Object> item = new HashMap<String, Object>();
+//        item.put("prj", edit_view_prj.getText().toString());
+//        item.put("date", str);
+//        Array_List_prj.add(item);
+        MainActivity.dm.addProject(List_view_add_buf);
 
-        Simple_Adapter_prj.notifyDataSetChanged();
+//        Simple_Adapter_prj.notifyDataSetChanged();
+        ArrayAdapter_prj.notifyDataSetChanged();
     }
 
     /**
