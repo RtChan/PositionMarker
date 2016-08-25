@@ -205,14 +205,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Fragment fragment = null;
         Class fragmentClass = null;
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_project) {
+            fragmentClass = ProjectFragment.class;
+        } else if (id == R.id.nav_point){
+            fragmentClass = PointListFragment.class;
+        } else if (id == R.id.nav_map){
             fragmentClass = MapFragment.class;
-        } else if (id == R.id.nav_gallery){
-            fragmentClass = ProjectFragment.class;
-        } else if (id == R.id.nav_project){
-            fragmentClass = ProjectFragment.class;
         }else {
-            fragmentClass = MapFragment.class;
+            fragmentClass = ProjectFragment.class;
         }
 //        } else if (id == R.id.nav_gallery) {
 //

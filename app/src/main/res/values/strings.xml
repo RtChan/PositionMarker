@@ -8,4 +8,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Drawer 菜单列表 -->
+    <string name="menu_project">工程管理</string>
+    <string name="menu_map">地图视图</string>
+    <string name="menu_point">坐标列表</string>
+
 </resources>
