@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,6 +109,11 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
      */
     @Override
     public void onClick(View v) {
+        MainActivity activity = (MainActivity) getActivity();
+        Fragment fragment = null;
+        Class fragmentClass = null;
+        fragmentClass = PointListFragment.class;
+
         switch (v.getId()) {
             case R.id.locate:{
                 updateDroneLocation();
@@ -141,6 +147,14 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
             default:
                 break;
         }
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
     }
 
     private void updateUI() {
