@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             Fragment fragment = null;
             Class fragmentClass = null;
-            fragmentClass = MapFragment.class;  // 设置初始界面
+            fragmentClass = ProjectFragment.class;  // 设置初始界面
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
@@ -207,8 +207,6 @@ public class MainActivity extends AppCompatActivity
         Class fragmentClass = null;
         if (id == R.id.nav_project) {
             fragmentClass = ProjectFragment.class;
-        } else if (id == R.id.nav_point){
-            fragmentClass = PointListFragment.class;
         } else if (id == R.id.nav_map){
             fragmentClass = MapFragment.class;
         }else {

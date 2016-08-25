@@ -8,13 +8,13 @@
             android:title="@string/menu_project"
             android:checked="true"/>
         <item
-            android:id="@+id/nav_point"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_point" />
-        <item
             android:id="@+id/nav_map"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_map" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="N/A" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
