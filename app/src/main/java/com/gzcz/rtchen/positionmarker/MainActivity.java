@@ -35,8 +35,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
             MapFragment.OnFragmentInteractionListener,
             ProjectFragment.OnFragmentInteractionListener,
-            PointFragment.OnFragmentInteractionListener,
-            PointList.OnFragmentInteractionListener{
+            PointListFragment.OnFragmentInteractionListener{
 
 
     /* 声明大疆SDK控件 */
@@ -209,7 +208,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_project) {
             fragmentClass = ProjectFragment.class;
         } else if (id == R.id.nav_point){
-            fragmentClass = PointFragment.class;
+            fragmentClass = PointListFragment.class;
         } else if (id == R.id.nav_map){
             fragmentClass = MapFragment.class;
         }else {

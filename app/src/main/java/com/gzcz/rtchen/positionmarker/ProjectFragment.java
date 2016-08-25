@@ -4,26 +4,69 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
- * Created by RtChen on 2016/7/18.
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link ProjectFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link ProjectFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
-public class ProjectFragment extends Fragment {
-    private static final String TAG = "ProjectFragment";
+public class ProjectFragment extends Fragment
+        implements View.OnClickListener{
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    View mView = null;
     private OnFragmentInteractionListener mListener;
+
+    private EditText edit_view_prj;
+    ArrayList<Map<String, Object>> Array_List_prj = new ArrayList<Map<String, Object>>();
+    ListView list_view_prj = null;
+    SimpleAdapter Simple_Adapter_prj = null;
+    Button btn_add_prj;
 
     public ProjectFragment() {
         // Required empty public constructor
-        Log.d(TAG, "ProjectFragment: ");
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment ProjectFragment.
+     */
+    // TODO: Rename and change types and number of parameters
     public static ProjectFragment newInstance(String param1, String param2) {
         ProjectFragment fragment = new ProjectFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,15 +74,49 @@ public class ProjectFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("WHERE", "ProjectFragment onCreate()");
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
+
+        mView = inflater.inflate(R.layout.project_fragment, container, false);
+        edit_view_prj = (EditText) mView.findViewById(R.id.edit_view_prj);
+        list_view_prj = (ListView) mView.findViewById(R.id.list_view_prj);
+        btn_add_prj = (Button) mView.findViewById(R.id.btn_add_prj);
+        btn_add_prj.setOnClickListener(this);
+
+        MainActivity c = (MainActivity) getContext();
+        Simple_Adapter_prj = new SimpleAdapter(c, Array_List_prj, android.R.layout.simple_expandable_list_item_2, new String[]{"prj", "date"}, new int[]{android.R.id.text1, android.R.id.text2});
+        list_view_prj.setAdapter(Simple_Adapter_prj);
+
+
+        list_view_prj.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                MainActivity activity = (MainActivity) getActivity();
+                Fragment fragment = null;
+                Class fragmentClass = null;
+
+                fragmentClass = PointListFragment.class;
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            }
+        });
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.project_fragment, container, false);
+        return mView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -64,6 +141,22 @@ public class ProjectFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        String List_view_add_buf = edit_view_prj.getText().toString();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss ");
+        Date curDate = new Date(System.currentTimeMillis());
+        String str = formatter.format(curDate);
+
+        Map<String,Object> item = new HashMap<String, Object>();
+        item.put("prj", edit_view_prj.getText().toString());
+        item.put("date", str);
+        Array_List_prj.add(item);
+
+        Simple_Adapter_prj.notifyDataSetChanged();
     }
 
     /**
