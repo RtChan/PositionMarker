@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity
         return mDroneLocationLng;
     }
 
+    /* 实例化 静态 DataManager */
+    static DataManager dm = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +110,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        /* 实例化 DataManager */
+        dm = new DataManager(this);
 
          /* 注册BroadcastReceiver以检测产品连接状态  */
         IntentFilter filter = new IntentFilter();
