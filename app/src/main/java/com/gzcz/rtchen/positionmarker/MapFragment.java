@@ -33,7 +33,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     MapView mMapView = null;
     AMap mAMap = null;
     Marker mDroneMarker = null;
-
     Button mButtonLocate = null;
 
     /* Fragment 用 */
@@ -46,6 +45,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     ImageView qrImageView = null;
     double mDroneLocationLat;
     double mDroneLocationLng;
+
+    /* DataManager 用 */
+    DataManager dm = null;
 
     public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
@@ -111,6 +113,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
                 updateDroneLocation();
                 cameraUpdate();
                 updateUI();
+                test();
                 break;
             }
 
@@ -183,6 +186,11 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         qrImageView = (ImageView)mView.findViewById(R.id.iv_qr_image);
 
         initMapView();
+
+
+        // TODO：删除此测试代码
+        dm = new DataManager(getActivity());
+
 
         return mView;
     }
@@ -260,5 +268,12 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    // TODO:删除此测试用代码
+    public void test(){
+
+
+
     }
 }
