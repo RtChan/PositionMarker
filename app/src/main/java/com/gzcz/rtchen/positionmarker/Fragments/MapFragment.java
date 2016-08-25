@@ -1,4 +1,4 @@
-package com.gzcz.rtchen.positionmarker;
+package com.gzcz.rtchen.positionmarker.Fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -23,6 +23,9 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.google.zxing.WriterException;
+import com.gzcz.rtchen.positionmarker.MainActivity;
+import com.gzcz.rtchen.positionmarker.R;
+import com.gzcz.rtchen.positionmarker.ZXingQR;
 
 import java.text.DecimalFormat;
 

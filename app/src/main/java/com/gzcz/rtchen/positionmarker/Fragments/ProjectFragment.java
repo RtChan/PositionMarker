@@ -1,10 +1,12 @@
-package com.gzcz.rtchen.positionmarker;
+package com.gzcz.rtchen.positionmarker.Fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.gzcz.rtchen.positionmarker.MainActivity;
+import com.gzcz.rtchen.positionmarker.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +34,7 @@ import java.util.Date;
  * create an instance of this fragment.
  */
 public class ProjectFragment extends Fragment
-        implements View.OnClickListener{
+        implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -42,7 +48,7 @@ public class ProjectFragment extends Fragment
     private OnFragmentInteractionListener mListener;
 
     private EditText edit_view_prj;
-//    ArrayList<Map<String, Object>> Array_List_prj = new ArrayList<Map<String, Object>>();
+    //    ArrayList<Map<String, Object>> Array_List_prj = new ArrayList<Map<String, Object>>();
     ArrayList<String> Array_List_prj = null;
     ListView list_view_prj = null;
     //SimpleAdapter Simple_Adapter_prj = null;
@@ -100,10 +106,8 @@ public class ProjectFragment extends Fragment
         list_view_prj.setAdapter(ArrayAdapter_prj);
 
         list_view_prj.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                 MainActivity activity = (MainActivity) getActivity();
                 Fragment fragment = null;
                 Class fragmentClass = null;
@@ -116,6 +120,31 @@ public class ProjectFragment extends Fragment
                 }
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            }
+        });
+
+        list_view_prj.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                // TODO: 将字符串放入string.xml中
+                builder.setTitle("删除该工程？");
+                builder.setNegativeButton("取消", null);
+                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO：删除工程
+                    }
+                });
+                builder.setNeutralButton("重命名", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO：重命名工程
+                    }
+                });
+                builder.setIcon(R.mipmap.ic_launcher);
+                builder.show();
+                return true; // 此处必须返回true，默认返回false时会重复执行单击事件
             }
         });
 
@@ -162,7 +191,11 @@ public class ProjectFragment extends Fragment
 //        item.put("prj", edit_view_prj.getText().toString());
 //        item.put("date", str);
 //        Array_List_prj.add(item);
-        MainActivity.dm.addProject(List_view_add_buf);
+        if (List_view_add_buf.equals("")) {
+            Toast.makeText(getActivity(), R.string.toast_add_prj_no_title, Toast.LENGTH_LONG).show();
+        } else {
+            MainActivity.dm.addProject(List_view_add_buf);
+        }
 
 //        Simple_Adapter_prj.notifyDataSetChanged();
         ArrayAdapter_prj.notifyDataSetChanged();

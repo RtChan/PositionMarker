@@ -25,6 +25,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.gzcz.rtchen.positionmarker.Fragments.MapFragment;
+import com.gzcz.rtchen.positionmarker.Fragments.PointListFragment;
+import com.gzcz.rtchen.positionmarker.Fragments.ProjectFragment;
+
 import dji.sdk.FlightController.DJIFlightController;
 import dji.sdk.FlightController.DJIFlightControllerDataType;
 import dji.sdk.FlightController.DJIFlightControllerDelegate;
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /* 实例化 静态 DataManager */
-    static DataManager dm = null;
+    public static DataManager dm = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
