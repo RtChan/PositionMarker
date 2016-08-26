@@ -2,18 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gzcz.rtchen.positionmarker.PointListFragment">
+    tools:context=".Fragments.PointListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- TODO: 转移到@string -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="当前工程："/>
 
         <TextView
-            android:id="@+id/list_view_text_view"
-            android:layout_width="260dp"
-            android:layout_height="45dp"
-            android:text="Prj:"/>
+            android:id="@+id/tv_current_project_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

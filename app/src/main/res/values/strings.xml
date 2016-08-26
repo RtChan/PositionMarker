@@ -16,6 +16,9 @@
 
     <!-- ProjectFragment 元素 -->
     <string name="btn_add_prj">添加工程</string>
+    <string name="et_hint">输入工程名以添加工程</string>
+
+    <string name="toast_add_prj_no_title">请先输入工程名！</string>
 
     <!-- ZXingQRFragment 元素 -->
     <string name="btn_previous_page">上一页</string>
