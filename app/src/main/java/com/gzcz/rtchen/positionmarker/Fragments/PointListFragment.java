@@ -7,9 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.gzcz.rtchen.positionmarker.ListViewPositionPoint;
+import com.gzcz.rtchen.positionmarker.MainActivity;
+import com.gzcz.rtchen.positionmarker.MyListViewAdapter;
+import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.R;
+
+import java.util.ArrayList;
 
 
 /**
@@ -33,7 +41,11 @@ public class PointListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     View mView = null;
-    TextView list_view_text_view = null;
+
+    ArrayList<PositionPoint> mPointsList = null;
+    ArrayList<ListViewPositionPoint> mList = null;
+    ListView mListView = null;
+    MyListViewAdapter mAdapter = null;
 
     public PointListFragment() {
         // Required empty public constructor
@@ -66,18 +78,61 @@ public class PointListFragment extends Fragment {
         }
     }
 
+    public ArrayList<ListViewPositionPoint> convertList(ArrayList<PositionPoint> src) {
+        if (null == src) return null;
+
+        ArrayList<ListViewPositionPoint> ret = new ArrayList<ListViewPositionPoint>();
+        if (src.isEmpty()) return ret;
+
+        int currentNum = 0;
+        int currentDotNum = 0;
+        String currentDotName = src.get(0).getDotName();
+
+        for (PositionPoint p : src) {
+            if (!p.getDotName().equals(currentDotName)) {
+                currentDotNum = 0;
+                currentDotName = p.getDotName();
+            }
+            ret.add(new ListViewPositionPoint(++currentNum, ++currentDotNum, false, p));
+        }
+
+        // TODO:出错处理
+        //return null;
+        return ret;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         mView = inflater.inflate(R.layout.pointlist_fragment, container, false);
-        list_view_text_view = (TextView) mView.findViewById(R.id.list_view_text_view);
+        mListView = (ListView) mView.findViewById(R.id.list);
 
-//        String prj = getActivity().getIntent().getStringExtra("prj");
-//        list_view_text_view.setText("Prj:" + prj);
+        TextView mTV = (TextView) mView.findViewById(R.id.tv_current_project_name);
+        mTV.setText(MainActivity.dm.getCurrentProjectName());
 
+        CheckBox mCB = (CheckBox) mView.findViewById(R.id.mcb);
+        mCB.setVisibility(CheckBox.INVISIBLE);
+
+        mPointsList = MainActivity.dm.getPointsList();
+
+        mList = new ArrayList<ListViewPositionPoint>();
+        mList = convertList(mPointsList);
+
+        mAdapter = new MyListViewAdapter(getContext(), mList);
+        mListView.setAdapter(mAdapter);
+
+        // TODO:简化步骤
+        mList = convertList(mPointsList);
+        mAdapter.refresh(mList);
+
+        /*
+         * 注意不能使用上面那句默认返回语句！否则自定义的ListView不会显示。
+         * 参考文章：http://blog.csdn.net/mldan/article/details/39896765
+         * */
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.pointlist_fragment, container, false);
+        //return inflater.inflate(R.layout.pointlist_fragment, container, false);
+        return mView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -109,7 +164,7 @@ public class PointListFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

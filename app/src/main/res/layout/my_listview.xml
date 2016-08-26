@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!-- 序号区块 -->
+    <!-- 需要设定 width 否则序号靠右需要滚动刷新后才会靠右 -->
+    <LinearLayout
+        android:layout_width="60dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/mtv_num"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="end"
+            android:text="序号"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+    <!-- 点名和坐标区块 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
+
+        <!-- 排放点名 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/mtv_dotname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="点名"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/mtv_dotnum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="点序号"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- 排放坐标 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/mtv_latitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="经度" />
+
+            <TextView
+                android:id="@+id/mtv_longitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="纬度" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 使用LinerLayout将CheckBox放到最右 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right">
+
+        <CheckBox
+            android:id="@+id/mcb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false" />
+    </LinearLayout>
+
+
+</LinearLayout>
