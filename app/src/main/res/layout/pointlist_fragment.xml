@@ -24,7 +24,7 @@
     </LinearLayout>
 
     <ListView
-        android:id="@+id/lv_points_list"
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_point_list">

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.gzcz.rtchen.positionmarker.ListViewPositionPoint;
+import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.MyListViewAdapter;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.R;
@@ -39,7 +40,7 @@ public class PointListFragment extends Fragment {
 
     View mView = null;
 
-//    ArrayList<PositionPoint> mPointsList = null;
+    ArrayList<PositionPoint> mPointsList = null;
     ArrayList<ListViewPositionPoint> mList = null;
     ListView mListView = null;
     MyListViewAdapter mAdapter = null;
@@ -103,20 +104,27 @@ public class PointListFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         mView = inflater.inflate(R.layout.pointlist_fragment, container, false);
-        mListView = (ListView) mView.findViewById(R.id.lv_points_list);
+        mListView = (ListView) mView.findViewById(R.id.list);
 
-//        mList = convertList(MainActivity.dm.getPointsList());
-        mList.add(new ListViewPositionPoint(0,0,false,new PositionPoint(7,7,"new")));
+        mPointsList = MainActivity.dm.getPointsList();
+
+        mList = new ArrayList<ListViewPositionPoint>();
+        mList = convertList(mPointsList);
+
         mAdapter = new MyListViewAdapter(getContext(), mList);
         mListView.setAdapter(mAdapter);
 
-//        MainActivity.dm.addPoint(new PositionPoint(9,9,"InPointListFragment"));
-
-//        mList = convertList(MainActivity.dm.getPointsList());
+        // TODO:简化步骤
+        mList = convertList(mPointsList);
         mAdapter.refresh(mList);
 
+        /*
+         * 注意不能使用上面那句默认返回语句！否则自定义的ListView不会显示。
+         * 参考文章：http://blog.csdn.net/mldan/article/details/39896765
+         * */
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.pointlist_fragment, container, false);
+        //return inflater.inflate(R.layout.pointlist_fragment, container, false);
+        return mView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -148,7 +156,7 @@ public class PointListFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
