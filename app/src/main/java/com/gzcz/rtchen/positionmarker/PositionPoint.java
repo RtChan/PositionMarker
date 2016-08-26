@@ -20,4 +20,16 @@ public class PositionPoint {
         Longitude = lng;
         DotName = s;
     }
+
+    public double getLatitude() {
+        return Latitude;
+    }
+
+    public double getLongitude() {
+        return Longitude;
+    }
+
+    public String getDotName() {
+        return DotName;
+    }
 }

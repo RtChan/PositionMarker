@@ -15,50 +15,16 @@ import java.util.ArrayList;
  */
 public class MyListViewAdapter extends BaseAdapter {
 
-    private class ListViewPositionPoint extends PositionPoint{
-        int num;
-        int dotnum;
-        boolean checked;
-
-        public ListViewPositionPoint(int n, int dn, boolean c, PositionPoint p) {
-            super(p.Latitude, p.Longitude, p.DotName);
-            this.num = n;
-            this.dotnum = dn;
-            this.checked = c;
-        }
-    }
-
-    private int mCurrentNum = 0;
-    private int mCurrentDotnum = 0;
-    private String mCurrentDotName = "";
-
     private ArrayList<ListViewPositionPoint> mData = null;
     private LayoutInflater layoutInflater;
     private Context context;
 
     /* 构造函数 */
-    public MyListViewAdapter(Context context,ArrayList<PositionPoint> data){
+    public MyListViewAdapter(Context context,ArrayList<ListViewPositionPoint> data){
         this.context=context;
-        mData = convertList(data);
-        // TODO：转换失败
-        if (mData == null) ;
+        mData = data;
 
         this.layoutInflater=LayoutInflater.from(context);
-    }
-    public ArrayList<ListViewPositionPoint> convertList(ArrayList<PositionPoint> data){
-        mData = new ArrayList<ListViewPositionPoint>();
-        mCurrentDotName = data.get(0).DotName;
-        for (PositionPoint p : data) {
-            if (p.DotName.equals(mCurrentDotName) == false) {
-                mCurrentDotnum = 0;
-                mCurrentDotName = p.DotName;
-            }
-            mData.add(new ListViewPositionPoint(++mCurrentNum, ++mCurrentDotnum, false, p));
-        }
-
-        // TODO：转换失败
-        //return null;
-        return mData;
     }
 
     /* 组件集合，对应 my_listview.xml 中的控件 */
@@ -105,14 +71,18 @@ public class MyListViewAdapter extends BaseAdapter {
         }
 
         //绑定数据
-        // TODO:修复命名
         elem.num.setText(String.valueOf(mData.get(position).num));
-        elem.dotname.setText(mData.get(position).DotName);
+        elem.dotname.setText(mData.get(position).dotname);
         elem.dotnum.setText(String.valueOf(mData.get(position).dotnum));
-        elem.latitude.setText(String.valueOf(mData.get(position).Latitude));
-        elem.longitude.setText(String.valueOf(mData.get(position).Longitude));
+        elem.latitude.setText(String.valueOf(mData.get(position).latitude));
+        elem.longitude.setText(String.valueOf(mData.get(position).longitude));
         elem.cb.setChecked(mData.get(position).checked);
 
         return convertView;
+    }
+
+    public void refresh(ArrayList<ListViewPositionPoint> data) {
+        mData = data;
+        notifyDataSetChanged();
     }
 }

@@ -112,6 +112,9 @@ public class ProjectFragment extends Fragment
                 Fragment fragment = null;
                 Class fragmentClass = null;
 
+                //TODO: 统一序号从0开始
+                MainActivity.dm.setCurrentProject(i+1);
+
                 fragmentClass = PointListFragment.class;
                 try {
                     fragment = (Fragment) fragmentClass.newInstance();

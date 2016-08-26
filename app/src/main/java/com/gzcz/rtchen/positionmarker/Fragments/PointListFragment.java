@@ -7,9 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
 
+import com.gzcz.rtchen.positionmarker.ListViewPositionPoint;
+import com.gzcz.rtchen.positionmarker.MyListViewAdapter;
+import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.R;
+
+import java.util.ArrayList;
 
 
 /**
@@ -33,7 +38,11 @@ public class PointListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     View mView = null;
-    TextView list_view_text_view = null;
+
+//    ArrayList<PositionPoint> mPointsList = null;
+    ArrayList<ListViewPositionPoint> mList = null;
+    ListView mListView = null;
+    MyListViewAdapter mAdapter = null;
 
     public PointListFragment() {
         // Required empty public constructor
@@ -66,15 +75,45 @@ public class PointListFragment extends Fragment {
         }
     }
 
+    public ArrayList<ListViewPositionPoint> convertList(ArrayList<PositionPoint> src) {
+        if (null == src) return null;
+
+        ArrayList<ListViewPositionPoint> ret = new ArrayList<ListViewPositionPoint>();
+        if (src.isEmpty()) return ret;
+
+        int currentNum = 0;
+        int currentDotNum = 0;
+        String currentDotName = src.get(0).getDotName();
+
+        for (PositionPoint p : src) {
+            if (!p.getDotName().equals(currentDotName)) {
+                currentDotNum = 0;
+                currentDotName = p.getDotName();
+            }
+            ret.add(new ListViewPositionPoint(++currentNum, ++currentDotNum, false, p));
+        }
+
+        // TODO:出错处理
+        //return null;
+        return ret;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         mView = inflater.inflate(R.layout.pointlist_fragment, container, false);
-        list_view_text_view = (TextView) mView.findViewById(R.id.list_view_text_view);
+        mListView = (ListView) mView.findViewById(R.id.lv_points_list);
 
-//        String prj = getActivity().getIntent().getStringExtra("prj");
-//        list_view_text_view.setText("Prj:" + prj);
+//        mList = convertList(MainActivity.dm.getPointsList());
+        mList.add(new ListViewPositionPoint(0,0,false,new PositionPoint(7,7,"new")));
+        mAdapter = new MyListViewAdapter(getContext(), mList);
+        mListView.setAdapter(mAdapter);
+
+//        MainActivity.dm.addPoint(new PositionPoint(9,9,"InPointListFragment"));
+
+//        mList = convertList(MainActivity.dm.getPointsList());
+        mAdapter.refresh(mList);
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.pointlist_fragment, container, false);
