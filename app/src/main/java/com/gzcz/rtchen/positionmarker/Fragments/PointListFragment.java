@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.gzcz.rtchen.positionmarker.ListViewPositionPoint;
 import com.gzcz.rtchen.positionmarker.MainActivity;
@@ -105,6 +107,12 @@ public class PointListFragment extends Fragment {
 
         mView = inflater.inflate(R.layout.pointlist_fragment, container, false);
         mListView = (ListView) mView.findViewById(R.id.list);
+
+        TextView mTV = (TextView) mView.findViewById(R.id.tv_current_project_name);
+        mTV.setText(MainActivity.dm.getCurrentProjectName());
+
+        CheckBox mCB = (CheckBox) mView.findViewById(R.id.mcb);
+        mCB.setVisibility(CheckBox.INVISIBLE);
 
         mPointsList = MainActivity.dm.getPointsList();
 

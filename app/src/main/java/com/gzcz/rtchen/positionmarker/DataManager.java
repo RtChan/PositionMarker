@@ -68,6 +68,10 @@ public class DataManager {
         return index;
     }
 
+    public String getCurrentProjectName() {
+        return mCurrentProject;
+    }
+
     public int addProject(String name) {
         // 工程名列表未被初始化
         if (null == mProjectsList) return -1;
