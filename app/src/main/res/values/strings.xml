@@ -17,4 +17,8 @@
     <!-- ProjectFragment 元素 -->
     <string name="btn_add_prj">添加工程</string>
 
+    <!-- ZXingQRFragment 元素 -->
+    <string name="btn_previous_page">上一页</string>
+    <string name="btn_next_page">下一页</string>
+
 </resources>
