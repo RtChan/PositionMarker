@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,9 +111,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
      */
     @Override
     public void onClick(View v) {
-        MainActivity activity = (MainActivity) getActivity();
-        Fragment fragment = null;
-        Class fragmentClass = null;
 
         switch (v.getId()) {
             case R.id.locate:{
@@ -124,31 +122,21 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
 
             case R.id.btn_add_qrcode: {
                 if (!QRcodebuf.equals("")) {
-                    //Bitmap qrCodeBitmap = EncodingHandler.createQRCode(QRcodebuf, 350);
-                    ZXingQR zxingQR = new ZXingQR();
-                    try {
-                        Bitmap qrCodeBitmap = zxingQR.createQRCode(QRcodebuf, 1000);
-                        qrImageView.setImageBitmap(qrCodeBitmap);
-                    } catch (WriterException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    ZXingQRFragment zxingqrfragment = new ZXingQRFragment();
+                    Bundle args = new Bundle();
+                    args.putString("QRcodebuf",QRcodebuf);
+                    zxingqrfragment.setArguments(args);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
+                    transaction.replace(R.id.flContent, zxingqrfragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
                 }
 
                 else {
                     MainActivity c = (MainActivity)getContext();
                     Toast.makeText(c, "Text can not be empty", Toast.LENGTH_SHORT).show();
                 }
-
-                fragmentClass = ZXingQRFragment.class;
-                try {
-                    fragment = (Fragment) fragmentClass.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
                 break;
             }
