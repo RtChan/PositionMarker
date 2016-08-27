@@ -1,20 +1,17 @@
 package com.gzcz.rtchen.positionmarker.Fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
@@ -23,11 +20,8 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
-import com.google.zxing.WriterException;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.R;
-import com.gzcz.rtchen.positionmarker.ZXingQR;
-import com.gzcz.rtchen.positionmarker.ZXingQRFragment;
 
 import java.text.DecimalFormat;
 
@@ -46,11 +40,15 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     private OnFragmentInteractionListener mListener;
 
     /* ZXingQR用 */
-    Button mButtonQRcode = null;
-    String QRcodebuf = "";
-    ImageView qrImageView = null;
-    double mDroneLocationLat;
-    double mDroneLocationLng;
+//    Button mButtonQRcode = null;
+//    String QRcodebuf = "";
+//    ImageView qrImageView = null;
+//    double mDroneLocationLat;
+//    double mDroneLocationLng;
+
+    /* UI控件用 */
+    Spinner mSpinner = null;
+    ArrayAdapter<String> mSpinnerAdapter = null;
 
     public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
@@ -121,23 +119,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
             }
 
             case R.id.btn_add_qrcode: {
-                if (!QRcodebuf.equals("")) {
-                    ZXingQRFragment zxingqrfragment = new ZXingQRFragment();
-                    Bundle args = new Bundle();
-                    args.putString("QRcodebuf",QRcodebuf);
-                    zxingqrfragment.setArguments(args);
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                    transaction.replace(R.id.flContent, zxingqrfragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
-
-                else {
-                    MainActivity c = (MainActivity)getContext();
-                    Toast.makeText(c, "Text can not be empty", Toast.LENGTH_SHORT).show();
-                }
-
                 break;
             }
 
@@ -154,18 +135,17 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         mTextView.append(",");
         mTextView.append(df.format(MainActivity.getDroneLocationLng()));
 
-        mDroneLocationLat = MainActivity.getDroneLocationLat();
-        mDroneLocationLng = MainActivity.getDroneLocationLng();
+//        mDroneLocationLat = MainActivity.getDroneLocationLat();
+//        mDroneLocationLng = MainActivity.getDroneLocationLng();
+//
+//        if(QRcodebuf != "")
+//        {
+//            QRcodebuf = (QRcodebuf + "\r\n");
+//        }
 
-        if(QRcodebuf != "")
-        {
-            QRcodebuf = (QRcodebuf + "\r\n");
-        }
-
-        String QRcodelatbuf = df.format(mDroneLocationLat);
-        String QRcodelngbuf = df.format(mDroneLocationLng);
-        QRcodebuf = (QRcodebuf + QRcodelatbuf + " " + QRcodelngbuf);
-
+//        String QRcodelatbuf = df.format(mDroneLocationLat);
+//        String QRcodelngbuf = df.format(mDroneLocationLng);
+//        QRcodebuf = (QRcodebuf + QRcodelatbuf + " " + QRcodelngbuf);
     }
 
     @Override
@@ -184,11 +164,21 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         mMapView = (MapView) mView.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
 
-        mButtonQRcode = (Button)mView.findViewById(R.id.btn_add_qrcode);
-        mButtonQRcode.setOnClickListener(this);
-        qrImageView = (ImageView)mView.findViewById(R.id.iv_qr_image);
+//        mButtonQRcode = (Button)mView.findViewById(R.id.btn_add_qrcode);
+//        mButtonQRcode.setOnClickListener(this);
+//        qrImageView = (ImageView)mView.findViewById(R.id.iv_qr_image);
+
+        mSpinner = (Spinner) mView.findViewById(R.id.sp_projectslist);
+        mSpinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, MainActivity.dm.getProjectsList());
+        mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(mSpinnerAdapter);
+//        mSpinner.setOnItemSelectedListener();
 
         initMapView();
+
+        if (MainActivity.dm.getCurrentProjectName() != null) {
+            mSpinner.setSelection(MainActivity.dm.getProjectsList().indexOf(MainActivity.dm.getCurrentProjectName()), true);
+        }
 
         return mView;
     }

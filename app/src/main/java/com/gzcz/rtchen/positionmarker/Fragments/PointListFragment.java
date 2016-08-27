@@ -4,19 +4,25 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gzcz.rtchen.positionmarker.ListViewPositionPoint;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.MyListViewAdapter;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.R;
+import com.gzcz.rtchen.positionmarker.ZXingQRFragment;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
@@ -46,6 +52,11 @@ public class PointListFragment extends Fragment {
     ArrayList<ListViewPositionPoint> mList = null;
     ListView mListView = null;
     MyListViewAdapter mAdapter = null;
+
+    StringBuilder QRcodebuf = new StringBuilder();
+    ImageView qrImageView = null;
+    double mDroneLocationLat;
+    double mDroneLocationLng;
 
     public PointListFragment() {
         // Required empty public constructor
@@ -126,6 +137,10 @@ public class PointListFragment extends Fragment {
         mList = convertList(mPointsList);
         mAdapter.refresh(mList);
 
+        qrImageView = (ImageView)mView.findViewById(R.id.iv_qr_image);
+        Button btn_qrcode = (Button) mView.findViewById(R.id.btn_qr);
+        btn_qrcode.setOnClickListener(new btnQrcodeOnClickListener());
+
         /*
          * 注意不能使用上面那句默认返回语句！否则自定义的ListView不会显示。
          * 参考文章：http://blog.csdn.net/mldan/article/details/39896765
@@ -133,6 +148,50 @@ public class PointListFragment extends Fragment {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.pointlist_fragment, container, false);
         return mView;
+    }
+
+    class btnQrcodeOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            ArrayList<ListViewPositionPoint> list = mList;
+
+            if (null == list) {
+                return;
+            }
+
+            if (list.isEmpty()) {
+                Toast.makeText(getContext(), "No Point to Create QRcode!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            QRcodebuf = new StringBuilder();
+            DecimalFormat df = new DecimalFormat("#.0000");
+            for (ListViewPositionPoint p : list) {
+                if (!p.isChecked()) continue;
+
+                if (QRcodebuf.toString().isEmpty()) {
+                    QRcodebuf.append("\r\n");
+                }
+                String QRcodelatbuf = df.format(p.getLatitude());
+                String QRcodelngbuf = df.format(p.getLongitude());
+                QRcodebuf.append(QRcodelatbuf + " " + QRcodelngbuf);
+            }
+
+            if (!QRcodebuf.toString().isEmpty()) {
+                ZXingQRFragment zxingqrfragment = new ZXingQRFragment();
+                Bundle args = new Bundle();
+                args.putString("QRcodebuf",QRcodebuf.toString());
+                zxingqrfragment.setArguments(args);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.flContent, zxingqrfragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            } else {
+                MainActivity c = (MainActivity)getContext();
+                Toast.makeText(c, "Text can not be empty", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

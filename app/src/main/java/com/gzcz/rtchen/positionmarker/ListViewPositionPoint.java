@@ -19,4 +19,20 @@ public class ListViewPositionPoint {
         this.longitude = p.getLongitude();
         this.checked = c;
     }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
 }
