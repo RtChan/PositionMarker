@@ -58,6 +58,8 @@ public class PointListFragment extends Fragment {
     double mDroneLocationLat;
     double mDroneLocationLng;
 
+    boolean mCkecked = false;
+
     public PointListFragment() {
         // Required empty public constructor
     }
@@ -141,6 +143,8 @@ public class PointListFragment extends Fragment {
         Button btn_qrcode = (Button) mView.findViewById(R.id.btn_qr);
         btn_qrcode.setOnClickListener(new btnQrcodeOnClickListener());
 
+        Button btn_selectall = (Button) mView.findViewById(R.id.btn_selectall);
+        btn_selectall.setOnClickListener(new btnSelectallOnClickListener());
         /*
          * 注意不能使用上面那句默认返回语句！否则自定义的ListView不会显示。
          * 参考文章：http://blog.csdn.net/mldan/article/details/39896765
@@ -150,26 +154,39 @@ public class PointListFragment extends Fragment {
         return mView;
     }
 
+    class btnSelectallOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (null  == mList) return;
+
+            mCkecked = !mCkecked;
+
+            for (ListViewPositionPoint p : mList) {
+                p.setChecked(mCkecked);
+            }
+
+            mAdapter.refresh(mList);
+        }
+    }
+
     class btnQrcodeOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            ArrayList<ListViewPositionPoint> list = mList;
+//            ArrayList<ListViewPositionPoint> list = mList;
 
-            if (null == list) {
-                return;
-            }
+            if (null == mList) return;
 
-            if (list.isEmpty()) {
+            if (mList.isEmpty()) {
                 Toast.makeText(getContext(), "No Point to Create QRcode!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             QRcodebuf = new StringBuilder();
             DecimalFormat df = new DecimalFormat("#.0000");
-            for (ListViewPositionPoint p : list) {
+            for (ListViewPositionPoint p : mList) {
                 if (!p.isChecked()) continue;
 
-                if (QRcodebuf.toString().isEmpty()) {
+                if (!QRcodebuf.toString().isEmpty()) {
                     QRcodebuf.append("\r\n");
                 }
                 String QRcodelatbuf = df.format(p.getLatitude());

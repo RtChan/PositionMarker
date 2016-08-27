@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/*
+ * CheckBox处理参考：http://blog.csdn.net/qq435757399/article/details/8256453/
+ */
+
 /**
  * Created by Rt Chen on 2016/8/25.
  */
@@ -28,14 +32,25 @@ public class MyListViewAdapter extends BaseAdapter {
     }
 
     /* 组件集合，对应 my_listview.xml 中的控件 */
-    public final class ListElem{
+    public final class ViewHolder{
         public TextView num;
         public TextView dotname;
         public TextView dotnum;
         public TextView latitude;
         public TextView longitude;
-        public CheckBox cb;
+        public android.widget.CheckBox cb;
      }
+
+    private class CheckBoxOnClickListener implements View.OnClickListener{
+        int pos;
+        public CheckBoxOnClickListener(int inPosition) {
+            pos = inPosition;
+        }
+        @Override
+        public void onClick(View v) {
+            mData.get(pos).setChecked(!mData.get(pos).isChecked());
+        }
+    }
 
     @Override
     public int getCount() {
@@ -53,30 +68,36 @@ public class MyListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ListElem elem = null;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        ViewHolder mHolder = null;
+        CheckBoxOnClickListener myListener = null;
+
         if (convertView == null) {
-            elem = new ListElem();
+            mHolder = new ViewHolder();
+            myListener = new CheckBoxOnClickListener(position);
             convertView=layoutInflater.inflate(R.layout.my_listview, null);
             // 获得组件，实例化组件
-            elem.num = (TextView) convertView.findViewById(R.id.mtv_num);
-            elem.dotname = (TextView) convertView.findViewById(R.id.mtv_dotname);
-            elem.dotnum = (TextView) convertView.findViewById(R.id.mtv_dotnum);
-            elem.latitude = (TextView) convertView.findViewById(R.id.mtv_latitude);
-            elem.longitude = (TextView) convertView.findViewById(R.id.mtv_longitude);
-            elem.cb = (CheckBox) convertView.findViewById(R.id.mcb);
-            convertView.setTag(elem);
+            mHolder.num = (TextView) convertView.findViewById(R.id.mtv_num);
+            mHolder.dotname = (TextView) convertView.findViewById(R.id.mtv_dotname);
+            mHolder.dotnum = (TextView) convertView.findViewById(R.id.mtv_dotnum);
+            mHolder.latitude = (TextView) convertView.findViewById(R.id.mtv_latitude);
+            mHolder.longitude = (TextView) convertView.findViewById(R.id.mtv_longitude);
+            mHolder.cb = (CheckBox) convertView.findViewById(R.id.mcb);
+            convertView.setTag(mHolder);
         } else {
-            elem = (ListElem) convertView.getTag();
+            mHolder = (ViewHolder) convertView.getTag();
         }
 
         //绑定数据
-        elem.num.setText(String.valueOf(mData.get(position).num));
-        elem.dotname.setText(mData.get(position).dotname);
-        elem.dotnum.setText(String.valueOf(mData.get(position).dotnum));
-        elem.latitude.setText(String.valueOf(mData.get(position).latitude));
-        elem.longitude.setText(String.valueOf(mData.get(position).longitude));
-        elem.cb.setChecked(mData.get(position).checked);
+        final ListViewPositionPoint lvpp = mData.get(position); //为了给CheckBox用
+        mHolder.num.setText(String.valueOf(mData.get(position).num));
+        mHolder.dotname.setText(mData.get(position).dotname);
+        mHolder.dotnum.setText(String.valueOf(mData.get(position).dotnum));
+        mHolder.latitude.setText(String.valueOf(mData.get(position).latitude));
+        mHolder.longitude.setText(String.valueOf(mData.get(position).longitude));
+        mHolder.cb.setChecked(mData.get(position).checked);
+
+        mHolder.cb.setOnClickListener(myListener);
 
         return convertView;
     }
