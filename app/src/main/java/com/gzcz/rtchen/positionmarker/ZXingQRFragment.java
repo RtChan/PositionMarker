@@ -36,6 +36,7 @@ public class ZXingQRFragment extends Fragment implements View.OnClickListener{
 
     private OnFragmentInteractionListener mListener;
 
+    /* 翻页显示二维码定义变量 */
     int page_number = 1;
     int now_page = 1;
     int enter_number = 0;
@@ -51,6 +52,7 @@ public class ZXingQRFragment extends Fragment implements View.OnClickListener{
         // Required empty public constructor
     }
     // TODO: Rename and change types and number of parameters
+    //ZXing 之间的跳转使用 Bundle 来传输数据
     public static ZXingQRFragment newInstance(String QRcodebuf) {
         ZXingQRFragment fragment = new ZXingQRFragment();
         Bundle args = new Bundle();
@@ -59,6 +61,7 @@ public class ZXingQRFragment extends Fragment implements View.OnClickListener{
         return fragment;
     }
 
+    /* 计算所选数据一共需要使用多少页二维码显示 */
     public void Judge_number(String QRcodebuf){
         for(int i = 0; i < QRcodebuf.length(); i++){
             if (QRcodebuf.charAt(i) == '\n'){
@@ -69,6 +72,7 @@ public class ZXingQRFragment extends Fragment implements View.OnClickListener{
         page_number = (page_number - 1) / 20 + 1;
     }
 
+    /* 将获取的字符串对应页数分组放入 Display_part 字符串中，进行当前页数对应的二维码数据显示 */
     public void clone_QRcodebuf(){
         Display_part = "";
         int i = 0;
@@ -101,6 +105,7 @@ public class ZXingQRFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view){
 
+        //按钮触发，上一页 下一页翻页显示二维码
         switch (view.getId()){
             case R.id.btn_previous_page:{
                 Log.d("TAG", "onClick: "+Integer.toString(now_page)+Integer.toString(page_number));
@@ -172,9 +177,10 @@ public class ZXingQRFragment extends Fragment implements View.OnClickListener{
 
         textView.setText(String.valueOf(now_page) + "/" + String.valueOf(page_number));
 
+        clone_QRcodebuf();
         ZXingQR zxingQR = new ZXingQR();
         try {
-            Bitmap qrCodeBitmap = zxingQR.createQRCode(QRcodebuf, 1000);
+            Bitmap qrCodeBitmap = zxingQR.createQRCode(Display_part, 1000);
             qrImageView.setImageBitmap(qrCodeBitmap);
         } catch (WriterException e) {
             e.printStackTrace();
