@@ -23,11 +23,8 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
-<<<<<<< HEAD
-import com.gzcz.rtchen.positionmarker.DjiSdkApplication;
-=======
 import com.amap.api.maps2d.model.PolylineOptions;
->>>>>>> master
+import com.gzcz.rtchen.positionmarker.DjiSdkApplication;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.R;
@@ -155,26 +152,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     public void onClick(View v) {
 
         switch (v.getId()) {
-<<<<<<< HEAD
-
             case R.id.locate: {
                 if (setDJIUpdateStateCallback(true)) {
                     mAddPoint.setEnabled(true);
                 } else {
                     mAddPoint.setEnabled(false);
                 }
-
-=======
-            case R.id.locate:{
-                updateDroneLocation();
-                markLocation();
-                polyLine();
-                cameraUpdate();
-                updateUI();
->>>>>>> master
                 break;
             }
-
             case R.id.btn_addPoint: {
                 String s = mDotName.getText().toString();
 
@@ -185,10 +170,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 
                 if (s.isEmpty()) s = "null";
                 MainActivity.dm.addPoint(new PositionPoint(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng(), s));
+
                 markLocation();
+                polyLine();
                 break;
             }
-
             default:
                 break;
         }
