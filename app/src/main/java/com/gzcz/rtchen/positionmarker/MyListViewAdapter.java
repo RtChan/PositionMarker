@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /*
@@ -88,13 +89,16 @@ public class MyListViewAdapter extends BaseAdapter {
             mHolder = (ViewHolder) convertView.getTag();
         }
 
+        DecimalFormat df = new DecimalFormat("#.0000");
+
+
         //绑定数据
         final ListViewPositionPoint lvpp = mData.get(position); //为了给CheckBox用
         mHolder.num.setText(String.valueOf(mData.get(position).num));
         mHolder.dotname.setText(mData.get(position).dotname);
         mHolder.dotnum.setText(String.valueOf(mData.get(position).dotnum));
-        mHolder.latitude.setText(String.valueOf(mData.get(position).latitude));
-        mHolder.longitude.setText(String.valueOf(mData.get(position).longitude));
+        mHolder.latitude.setText(df.format(mData.get(position).latitude));
+        mHolder.longitude.setText(df.format(mData.get(position).longitude));
         mHolder.cb.setChecked(mData.get(position).checked);
 
         mHolder.cb.setOnClickListener(myListener);
