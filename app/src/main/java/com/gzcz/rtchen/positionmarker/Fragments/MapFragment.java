@@ -1,6 +1,7 @@
 package com.gzcz.rtchen.positionmarker.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,12 +23,18 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
+<<<<<<< HEAD
 import com.gzcz.rtchen.positionmarker.DjiSdkApplication;
+=======
+import com.amap.api.maps2d.model.PolylineOptions;
+>>>>>>> master
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.R;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import dji.sdk.FlightController.DJIFlightController;
 import dji.sdk.FlightController.DJIFlightControllerDataType;
@@ -43,6 +50,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     MapView mMapView = null;
     AMap mAMap = null;
     Marker mDroneMarker = null;
+    Marker marker[] = new Marker[1024];
+    int markerNumber = 1;
+    List<LatLng> latlngs = new ArrayList<LatLng>();
     Button mButtonLocate = null;
 
 
@@ -119,10 +129,16 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             @Override
             public void run() {
                 if(MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())){
-                    mDroneMarker = mAMap.addMarker(markerOptions);
+                    marker[markerNumber] = mAMap.addMarker(markerOptions);
+                    markerNumber ++;
                 }
             }
         });
+    }
+
+    public void polyLine(){
+        latlngs.add(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+        mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255,1,1,1)));
     }
 
     @Override
@@ -139,6 +155,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     public void onClick(View v) {
 
         switch (v.getId()) {
+<<<<<<< HEAD
 
             case R.id.locate: {
                 if (setDJIUpdateStateCallback(true)) {
@@ -147,6 +164,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
                     mAddPoint.setEnabled(false);
                 }
 
+=======
+            case R.id.locate:{
+                updateDroneLocation();
+                markLocation();
+                polyLine();
+                cameraUpdate();
+                updateUI();
+>>>>>>> master
                 break;
             }
 
