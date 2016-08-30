@@ -55,6 +55,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     List<Marker> markers = new ArrayList<Marker>();
     Button mButtonLocate = null;
 
+    int centerNumber = 0;
+    int i = 0;
+    String DotnameCenter = "";
+
     // TODO:删除此测试代码
     static double testnum = 0;
 
@@ -99,8 +103,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 //        ArrayList<LatLng> latlngs = new ArrayList<LatLng>();
 
         for (PositionPoint p : MainActivity.dm.getPointsList()) {
+            centerNumber = 0;
             mAMap.addMarker(new MarkerOptions().position(new LatLng(p.getLatitude(),p.getLongitude())).title(p.getDotName()));
-            mAMap.addText(new TextOptions().position(new LatLng(p.getLatitude(), p.getLongitude())).text(p.getDotName()).fontColor(Color.BLACK).visible(true));
+            centerNumber = p.getDotName().length() / 2 + 1;
+
+            for(i = 0; i < centerNumber; i++){
+                DotnameCenter = DotnameCenter + " ";
+            }
+
+            mAMap.addText(new TextOptions().position(new LatLng(p.getLatitude(), p.getLongitude())).text(DotnameCenter + p.getDotName()).fontColor(Color.BLACK).visible(true));
             latlngs.add(new LatLng(p.getLatitude(),p.getLongitude()));
         }
         mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255, 1, 1, 1)).visible(true));
