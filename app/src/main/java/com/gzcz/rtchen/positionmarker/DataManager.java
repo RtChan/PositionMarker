@@ -18,7 +18,12 @@ public class DataManager {
 
     private ArrayList<String> mProjectsList = null;
     private ArrayList<PositionPoint> mPointsList = null;
+    private ArrayList<PositionPointView> mPointViewsList = null;
     private String mCurrentProject = new String();
+
+    private int mLastNum;
+    private int mLastDotNum;
+    private String mLastDotName;
 
     public DataManager(Context c) {
         mContext = c;
@@ -44,6 +49,19 @@ public class DataManager {
     public ArrayList<PositionPoint> getPointsList() {
         readPointsListFromeFile();
         return mPointsList;
+    }
+
+    public ArrayList<PositionPointView> getPointViewsList() {
+        getPointsList();
+        convertPointsListToPointViewsList();
+        return mPointViewsList;
+    }
+
+    public String getLastDotNameAndNum() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(mLastDotName);
+        sb.append(mLastDotNum);
+        return sb.toString();
     }
 
     public void setCurrentProject(String name) {
@@ -138,6 +156,29 @@ public class DataManager {
         savePointsListToFile();
 
         return index;
+    }
+
+    private void convertPointsListToPointViewsList() {
+        if (null == mPointsList) return;
+
+        mPointViewsList = new ArrayList<PositionPointView>();
+        if (mPointsList.isEmpty()) return;
+
+        int currentNum = 0;
+        int currentDotNum = 0;
+        String currentDotName = mPointsList.get(0).getDotName();
+
+        for (PositionPoint p : mPointsList) {
+            if (!p.getDotName().equals(currentDotName)) {
+                currentDotNum = 0;
+                currentDotName = p.getDotName();
+            }
+            mPointViewsList.add(new PositionPointView(++currentNum, ++currentDotNum, false, p));
+        }
+
+        mLastNum = currentNum;
+        mLastDotName = currentDotName;
+        mLastDotNum = currentDotNum;
     }
 
     private void saveProjectsListToFile() {

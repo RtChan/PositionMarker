@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gzcz.rtchen.positionmarker.ListViewPositionPoint;
+import com.gzcz.rtchen.positionmarker.PositionPointView;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.MyListViewAdapter;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
@@ -48,8 +48,8 @@ public class PointListFragment extends Fragment {
 
     View mView = null;
 
+    public static ArrayList<PositionPointView> mList = null;
     ArrayList<PositionPoint> mPointsList = null;
-    ArrayList<ListViewPositionPoint> mList = null;
     ListView mListView = null;
     MyListViewAdapter mAdapter = null;
 
@@ -91,28 +91,28 @@ public class PointListFragment extends Fragment {
         }
     }
 
-    public ArrayList<ListViewPositionPoint> convertList(ArrayList<PositionPoint> src) {
-        if (null == src) return null;
-
-        ArrayList<ListViewPositionPoint> ret = new ArrayList<ListViewPositionPoint>();
-        if (src.isEmpty()) return ret;
-
-        int currentNum = 0;
-        int currentDotNum = 0;
-        String currentDotName = src.get(0).getDotName();
-
-        for (PositionPoint p : src) {
-            if (!p.getDotName().equals(currentDotName)) {
-                currentDotNum = 0;
-                currentDotName = p.getDotName();
-            }
-            ret.add(new ListViewPositionPoint(++currentNum, ++currentDotNum, false, p));
-        }
-
-        // TODO:出错处理
-        //return null;
-        return ret;
-    }
+//    public ArrayList<PositionPointView> convertList(ArrayList<PositionPoint> src) {
+//        if (null == src) return null;
+//
+//        ArrayList<PositionPointView> ret = new ArrayList<PositionPointView>();
+//        if (src.isEmpty()) return ret;
+//
+//        int currentNum = 0;
+//        int currentDotNum = 0;
+//        String currentDotName = src.get(0).getDotName();
+//
+//        for (PositionPoint p : src) {
+//            if (!p.getDotName().equals(currentDotName)) {
+//                currentDotNum = 0;
+//                currentDotName = p.getDotName();
+//            }
+//            ret.add(new PositionPointView(++currentNum, ++currentDotNum, false, p));
+//        }
+//
+//        // TODO:出错处理
+//        //return null;
+//        return ret;
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -129,15 +129,11 @@ public class PointListFragment extends Fragment {
 
         mPointsList = MainActivity.dm.getPointsList();
 
-        mList = new ArrayList<ListViewPositionPoint>();
-        mList = convertList(mPointsList);
+        mList = MainActivity.dm.getPointViewsList();
 
         mAdapter = new MyListViewAdapter(getContext(), mList);
         mListView.setAdapter(mAdapter);
-
-        // TODO:简化步骤
-        mList = convertList(mPointsList);
-        mAdapter.refresh(mList);
+        //mAdapter.refresh(mList);
 
         qrImageView = (ImageView)mView.findViewById(R.id.iv_qr_image);
         Button btn_qrcode = (Button) mView.findViewById(R.id.btn_qr);
@@ -161,7 +157,7 @@ public class PointListFragment extends Fragment {
 
             mCkecked = !mCkecked;
 
-            for (ListViewPositionPoint p : mList) {
+            for (PositionPointView p : mList) {
                 p.setChecked(mCkecked);
             }
 
@@ -172,7 +168,7 @@ public class PointListFragment extends Fragment {
     class btnQrcodeOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-//            ArrayList<ListViewPositionPoint> list = mList;
+//            ArrayList<PositionPointView> list = mList;
 
             if (null == mList) return;
 
@@ -184,7 +180,7 @@ public class PointListFragment extends Fragment {
             //Check Box 选择完毕之后，进行数据的连接，将数据全部放入一个字符串中
             QRcodebuf = new StringBuilder();
             DecimalFormat df = new DecimalFormat("#.0000");
-            for (ListViewPositionPoint p : mList) {
+            for (PositionPointView p : mList) {
                 if (!p.isChecked()) continue;
 
                 if (!QRcodebuf.toString().isEmpty()) {

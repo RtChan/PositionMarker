@@ -20,12 +20,12 @@ import java.util.ArrayList;
  */
 public class MyListViewAdapter extends BaseAdapter {
 
-    private ArrayList<ListViewPositionPoint> mData = null;
+    private ArrayList<PositionPointView> mData = null;
     private LayoutInflater layoutInflater;
     private Context context;
 
     /* 构造函数 */
-    public MyListViewAdapter(Context context,ArrayList<ListViewPositionPoint> data){
+    public MyListViewAdapter(Context context,ArrayList<PositionPointView> data){
         this.context=context;
         mData = data;
 
@@ -93,7 +93,7 @@ public class MyListViewAdapter extends BaseAdapter {
 
 
         //绑定数据
-        final ListViewPositionPoint lvpp = mData.get(position); //为了给CheckBox用
+        final PositionPointView lvpp = mData.get(position); //为了给CheckBox用
         mHolder.num.setText(String.valueOf(mData.get(position).num));
         mHolder.dotname.setText(mData.get(position).dotname);
         mHolder.dotnum.setText(String.valueOf(mData.get(position).dotnum));
@@ -106,7 +106,7 @@ public class MyListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void refresh(ArrayList<ListViewPositionPoint> data) {
+    public void refresh(ArrayList<PositionPointView> data) {
         mData = data;
         notifyDataSetChanged();
     }

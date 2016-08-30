@@ -29,6 +29,7 @@ import com.amap.api.maps2d.model.TextOptions;
 import com.gzcz.rtchen.positionmarker.DjiSdkApplication;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
+import com.gzcz.rtchen.positionmarker.PositionPointView;
 import com.gzcz.rtchen.positionmarker.R;
 
 import java.text.DecimalFormat;
@@ -51,7 +52,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     Marker mDroneMarker = null;
     Marker marker[] = new Marker[1024];
     int markerNumber = 1;
-    List<LatLng> latlngs = new ArrayList<LatLng>();
+    List<LatLng> mLatLngs = new ArrayList<LatLng>();
     List<Marker> markers = new ArrayList<Marker>();
     Button mButtonLocate = null;
 
@@ -89,36 +90,37 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 
     //初始化地图控件
     private void initMapView() {
+        LatLng mPos = null;
+
         if (mAMap == null) {
             mAMap = mMapView.getMap();
             mAMap.setOnMapClickListener(this);// add the listener for click for amap object
         }
-        LatLng mOriginPos = new LatLng(23.1414, 113.319);
-//        mAMap.addMarker(new MarkerOptions().position(mOriginPos).title("Marker in Origin"));
 
-//        ArrayList<LatLng> latlngs = new ArrayList<LatLng>();
-
-        for (PositionPoint p : MainActivity.dm.getPointsList()) {
-            mAMap.addMarker(new MarkerOptions().position(new LatLng(p.getLatitude(),p.getLongitude())).title(p.getDotName()));
-            mAMap.addText(new TextOptions().position(new LatLng(p.getLatitude(), p.getLongitude())).text(p.getDotName()).fontColor(Color.BLACK).visible(true));
-            latlngs.add(new LatLng(p.getLatitude(),p.getLongitude()));
+        if (null == MainActivity.dm.getPointViewsList() || MainActivity.dm.getPointViewsList().isEmpty()) {
+            mPos = new LatLng(23.1414, 113.319);
+            mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mPos, 17));
         }
-        mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255, 1, 1, 1)).visible(true));
-        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOriginPos, 17));
+
+        for (PositionPointView p : MainActivity.dm.getPointViewsList()) {
+            mPos = new LatLng(p.getLatitude(), p.getLongitude());
+            //TODO:使用工具类转换坐标系
+            DecimalFormat df = new DecimalFormat("#.0000");
+            mAMap.addMarker(new MarkerOptions().position(mPos).title(p.getDotNameAndNum()).snippet(df.format(p.getLatitude()) + "," + df.format(p.getLongitude())));
+            mAMap.addText(new TextOptions().position(mPos).text(p.getDotNameAndNum()).fontColor(Color.BLACK).visible(true));
+            mLatLngs.add(new LatLng(p.getLatitude(),p.getLongitude()));
+        }
+        mAMap.addPolyline(new PolylineOptions().addAll(mLatLngs).width(5).color(Color.argb(255, 1, 1, 1)).visible(true));
+        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mPos, 17));
     }
 
     /*
      * 在高德地图上更新无人机位置
      */
     public void updateDroneLocation() {
-//        LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
-
         CoordinateConverter converter = new CoordinateConverter();
-        // CoordType.GPS 待转换坐标类型
         converter.from(CoordinateConverter.CoordType.GPS);
-        // sourceLatLng待转换坐标点 DPoint类型
         converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
-        // 执行转换操作
         final LatLng desLatLng = converter.convert();
 
         //Create MarkerOptions object
@@ -140,19 +142,18 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         });
     }
 
-    public void markLocation() {
-//        LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
-
+    public void markNewLocation(LatLng l) {
         CoordinateConverter converter = new CoordinateConverter();
-        // CoordType.GPS 待转换坐标类型
         converter.from(CoordinateConverter.CoordType.GPS);
-        // sourceLatLng待转换坐标点 DPoint类型
-        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
-        // 执行转换操作
+        converter.coord(l);
         final LatLng desLatLng = converter.convert();
+
+        DecimalFormat df = new DecimalFormat("#.0000");
 
         final MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(desLatLng);
+        markerOptions.title(MainActivity.dm.getLastDotNameAndNum());
+        markerOptions.snippet(df.format(desLatLng.latitude) + "," + df.format(desLatLng.longitude));
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -164,22 +165,21 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         });
     }
 
-    public void polyLine() {
+    public void polyNewLine(LatLng l) {
         CoordinateConverter converter = new CoordinateConverter();
-        // CoordType.GPS 待转换坐标类型
         converter.from(CoordinateConverter.CoordType.GPS);
-        // sourceLatLng待转换坐标点 DPoint类型
-        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
-        // 执行转换操作
+        converter.coord(l);
         final LatLng desLatLng = converter.convert();
-        latlngs.add(desLatLng);
 
-//        latlngs.add(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
-        latlngs.add(desLatLng);
+        /*
+         * 注意：使用PolylineOptions().add()方法添加连线点无效！
+         */
+        mLatLngs.add(desLatLng);
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.BLACK).visible(true));
+                mAMap.addPolyline(new PolylineOptions().addAll(mLatLngs).width(10).color(Color.BLACK).visible(true));
             }
         });
     }
@@ -212,12 +212,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
                     Toast.makeText(getContext(), "无人机无GPS信号！", Toast.LENGTH_SHORT).show();
                     break;
                 }
-
                 if (s.isEmpty()) s = "null";
-                MainActivity.dm.addPoint(new PositionPoint(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng(), s));
-                //TODO：删除此测试代码
-                markLocation();
-                polyLine();
+
+                LatLng l = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
+                MainActivity.dm.addPoint(new PositionPoint(l.latitude, l.longitude, s));
+                markNewLocation(l);
+                polyNewLine(l);
                 break;
             }
             default:
@@ -283,11 +283,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         mAddPoint = (Button) mView.findViewById(R.id.btn_addPoint);
         mAddPoint.setOnClickListener(this);
 
-        initMapView();
-
         if (MainActivity.dm.getCurrentProjectName() != null) {
             mSpinner.setSelection(MainActivity.dm.getProjectsList().indexOf(MainActivity.dm.getCurrentProjectName()), true);
         }
+
+        initMapView();
 
         return mView;
     }
