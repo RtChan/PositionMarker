@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
@@ -20,10 +21,18 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.gzcz.rtchen.positionmarker.DjiSdkApplication;
 import com.gzcz.rtchen.positionmarker.MainActivity;
+import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.R;
 
 import java.text.DecimalFormat;
+
+import dji.sdk.FlightController.DJIFlightController;
+import dji.sdk.FlightController.DJIFlightControllerDataType;
+import dji.sdk.FlightController.DJIFlightControllerDelegate;
+import dji.sdk.Products.DJIAircraft;
+import dji.sdk.base.DJIBaseProduct;
 
 /**
  * Created by RtChen on 2016/7/18.
@@ -34,6 +43,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     AMap mAMap = null;
     Marker mDroneMarker = null;
     Button mButtonLocate = null;
+
 
     /* Fragment 用 */
     View mView = null;
@@ -49,6 +59,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     /* UI控件用 */
     Spinner mSpinner = null;
     ArrayAdapter<String> mSpinnerAdapter = null;
+    TextView mDotName = null;
+    Button mAddPoint = null;
 
     public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
@@ -112,13 +124,24 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
 
         switch (v.getId()) {
             case R.id.locate:{
-                updateDroneLocation();
-                cameraUpdate();
-                updateUI();
+                if (setDJICallback()) {
+                    mAddPoint.setEnabled(true);
+                } else {
+                    mAddPoint.setEnabled(false);
+                }
                 break;
             }
 
-            case R.id.btn_add_qrcode: {
+            case R.id.btn_addPoint:{
+                String s = mDotName.getText().toString();
+
+                if (Double.isNaN(MainActivity.getDroneLocationLat()) || Double.isNaN(MainActivity.getDroneLocationLat())) {
+                    Toast.makeText(getContext(), "无人机无GPS信号！", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                if (s.isEmpty()) s = "null";
+                MainActivity.dm.addPoint(new PositionPoint(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng(), s));
                 break;
             }
 
@@ -128,15 +151,22 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     }
 
     private void updateUI() {
-        TextView mTextView = (TextView) getView().findViewById(R.id.ConnectStatusTextView);
+        final TextView mTextView = (TextView) getView().findViewById(R.id.ConnectStatusTextView);
         DecimalFormat df = new DecimalFormat("#.0000");
 
-        mTextView.setText(df.format(MainActivity.getDroneLocationLat()));
-        mTextView.append(",");
-        mTextView.append(df.format(MainActivity.getDroneLocationLng()));
+        final StringBuilder sb = new StringBuilder();
 
-//        mDroneLocationLat = MainActivity.getDroneLocationLat();
-//        mDroneLocationLng = MainActivity.getDroneLocationLng();
+        sb.append(df.format(MainActivity.getDroneLocationLat()));
+        sb.append(",");
+        sb.append(df.format(MainActivity.getDroneLocationLng()));
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTextView.setText(sb.toString());
+            }
+        });
+
 //
 //        if(QRcodebuf != "")
 //        {
@@ -174,6 +204,10 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         mSpinner.setAdapter(mSpinnerAdapter);
 //        mSpinner.setOnItemSelectedListener();
 
+        mDotName = (TextView) mView.findViewById(R.id.btn_addPoint);
+        mAddPoint = (Button) mView.findViewById(R.id.btn_addPoint);
+        mAddPoint.setOnClickListener(this);
+
         initMapView();
 
         if (MainActivity.dm.getCurrentProjectName() != null) {
@@ -181,6 +215,37 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         }
 
         return mView;
+    }
+
+    public boolean setDJICallback(){
+        DJIBaseProduct mProduct = DjiSdkApplication.getProductInstance();
+        DJIFlightController mFlightController = null;
+
+        //已连接产品
+        if (mProduct != null && mProduct.isConnected()) {
+            if (mProduct instanceof DJIAircraft) {
+                mFlightController = ((DJIAircraft) mProduct).getFlightController();
+            }
+        } else {
+            return false;
+        }
+        //当连接的产品为DJIAircraft时执行
+        if (mFlightController != null) {
+            mFlightController.setUpdateSystemStateCallback(new DJIFlightControllerDelegate.FlightControllerUpdateSystemStateCallback() {
+                @Override
+                public void onResult(DJIFlightControllerDataType.DJIFlightControllerCurrentState state) {
+                    MainActivity.mDroneLocationLat = state.getAircraftLocation().getLatitude();
+                    MainActivity.mDroneLocationLng = state.getAircraftLocation().getLongitude();
+                    updateDroneLocation();
+                    cameraUpdate();
+                    updateUI();
+                }
+            });
+        } else {
+            return false;
+        }
+
+        return true;
     }
 
     public void onButtonPressed(Uri uri) {
@@ -211,7 +276,12 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
      * 更新高德地图显示
      */
     private void cameraUpdate(){
-        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()), 18));
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()), 18));
+            }
+        });
     }
 
     /*
