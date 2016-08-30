@@ -24,6 +24,7 @@ import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.R;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 /**
  * Created by RtChen on 2016/7/18.
@@ -33,6 +34,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     MapView mMapView = null;
     AMap mAMap = null;
     Marker mDroneMarker = null;
+    Marker marker[] = new Marker[1024];
+    int markerNumber = 1;
     Button mButtonLocate = null;
 
     /* Fragment 用 */
@@ -106,7 +109,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
             @Override
             public void run() {
                 if(MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())){
-                    mDroneMarker = mAMap.addMarker(markerOptions);
+                    marker[markerNumber] = mAMap.addMarker(markerOptions);
+                    markerNumber ++;
                 }
             }
         });
