@@ -1,6 +1,7 @@
 package com.gzcz.rtchen.positionmarker.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,11 +21,13 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.amap.api.maps2d.model.PolylineOptions;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by RtChen on 2016/7/18.
@@ -36,6 +39,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     Marker mDroneMarker = null;
     Marker marker[] = new Marker[1024];
     int markerNumber = 1;
+    List<LatLng> latlngs = new ArrayList<LatLng>();
     Button mButtonLocate = null;
 
     /* Fragment 用 */
@@ -116,6 +120,11 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         });
     }
 
+    public void polyLine(){
+        latlngs.add(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+        mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255,1,1,1)));
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +142,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
             case R.id.locate:{
                 updateDroneLocation();
                 markLocation();
+                polyLine();
                 cameraUpdate();
                 updateUI();
                 break;
