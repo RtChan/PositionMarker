@@ -97,6 +97,21 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         });
     }
 
+    public void markLocation(){
+        LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
+        final MarkerOptions markerOptions= new MarkerOptions();
+        markerOptions.position(pos);
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())){
+                    mDroneMarker = mAMap.addMarker(markerOptions);
+                }
+            }
+        });
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +128,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         switch (v.getId()) {
             case R.id.locate:{
                 updateDroneLocation();
+                markLocation();
                 cameraUpdate();
                 updateUI();
                 break;
