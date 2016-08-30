@@ -93,7 +93,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             mAMap.setOnMapClickListener(this);// add the listener for click for amap object
         }
         LatLng mOriginPos = new LatLng(23.1414, 113.319);
-        mAMap.addMarker(new MarkerOptions().position(mOriginPos).title("Marker in Origin"));
+//        mAMap.addMarker(new MarkerOptions().position(mOriginPos).title("Marker in Origin"));
+
+        ArrayList<LatLng> latlngs = new ArrayList<LatLng>();
+
+        for (PositionPoint p : MainActivity.dm.getPointsList()) {
+            mAMap.addMarker(new MarkerOptions().position(new LatLng(p.getLatitude(),p.getLongitude())).title(p.getDotName()));
+            latlngs.add(new LatLng(p.getLatitude(),p.getLongitude()));
+        }
+        mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255, 1, 1, 1)));
         mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOriginPos, 17));
     }
 
@@ -206,8 +214,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
                 if (s.isEmpty()) s = "null";
                 MainActivity.dm.addPoint(new PositionPoint(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng(), s));
                 //TODO：删除此测试代码
-//                MainActivity.dm.addPoint(new PositionPoint(23.150+testnum, 113.350+testnum, s));
-//                testnum += 1;
                 markLocation();
                 polyLine();
                 break;
