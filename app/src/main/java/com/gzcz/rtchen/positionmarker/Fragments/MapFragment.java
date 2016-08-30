@@ -110,6 +110,21 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         });
     }
 
+    public void markLocation(){
+        LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
+        final MarkerOptions markerOptions= new MarkerOptions();
+        markerOptions.position(pos);
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())){
+                    mDroneMarker = mAMap.addMarker(markerOptions);
+                }
+            }
+        });
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,12 +139,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     public void onClick(View v) {
 
         switch (v.getId()) {
+
             case R.id.locate: {
                 if (setDJIUpdateStateCallback(true)) {
                     mAddPoint.setEnabled(true);
                 } else {
                     mAddPoint.setEnabled(false);
                 }
+
                 break;
             }
 
@@ -143,6 +160,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 
                 if (s.isEmpty()) s = "null";
                 MainActivity.dm.addPoint(new PositionPoint(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng(), s));
+                markLocation();
                 break;
             }
 
