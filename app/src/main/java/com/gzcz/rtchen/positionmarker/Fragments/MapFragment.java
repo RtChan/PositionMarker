@@ -162,13 +162,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
         // 执行转换操作
         final LatLng desLatLng = converter.convert();
+        latlngs.add(desLatLng);
 
 //        latlngs.add(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
         latlngs.add(desLatLng);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255, 1, 1, 1)));
+                mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.BLACK).visible(true));
             }
         });
     }
