@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +60,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     /* UI控件用 */
     Spinner mSpinner = null;
     ArrayAdapter<String> mSpinnerAdapter = null;
-    TextView mDotName = null;
+    EditText mDotName = null;
     Button mAddPoint = null;
 
     public static MapFragment newInstance(String param1, String param2) {
@@ -204,7 +205,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         mSpinner.setAdapter(mSpinnerAdapter);
 //        mSpinner.setOnItemSelectedListener();
 
-        mDotName = (TextView) mView.findViewById(R.id.btn_addPoint);
+        mDotName = (EditText) mView.findViewById(R.id.et_dotname);
         mAddPoint = (Button) mView.findViewById(R.id.btn_addPoint);
         mAddPoint.setOnClickListener(this);
 
