@@ -155,7 +155,16 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     }
 
     public void polyLine() {
-        latlngs.add(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+        CoordinateConverter converter = new CoordinateConverter();
+        // CoordType.GPS 待转换坐标类型
+        converter.from(CoordinateConverter.CoordType.GPS);
+        // sourceLatLng待转换坐标点 DPoint类型
+        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+        // 执行转换操作
+        final LatLng desLatLng = converter.convert();
+
+//        latlngs.add(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+        latlngs.add(desLatLng);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
