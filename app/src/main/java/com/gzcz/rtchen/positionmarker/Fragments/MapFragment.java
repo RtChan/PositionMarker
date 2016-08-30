@@ -37,7 +37,7 @@ import dji.sdk.base.DJIBaseProduct;
 /**
  * Created by RtChen on 2016/7/18.
  */
-public class MapFragment extends Fragment implements View.OnClickListener,AMap.OnMapClickListener {
+public class MapFragment extends Fragment implements View.OnClickListener, AMap.OnMapClickListener {
     /* 声明高德SDK控件 */
     MapView mMapView = null;
     AMap mAMap = null;
@@ -88,7 +88,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     /*
      * 在高德地图上更新无人机位置
      */
-    public void updateDroneLocation(){
+    public void updateDroneLocation() {
         LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
         //Create MarkerOptions object
         final MarkerOptions markerOptions = new MarkerOptions();
@@ -103,7 +103,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
                 }
 
                 if (MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())) {
-                    mDroneMarker =  mAMap.addMarker(markerOptions);
+                    mDroneMarker = mAMap.addMarker(markerOptions);
                 }
             }
         });
@@ -123,8 +123,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.locate:{
-                if (setDJICallback()) {
+            case R.id.locate: {
+                if (setDJIUpdateStateCallback(true)) {
                     mAddPoint.setEnabled(true);
                 } else {
                     mAddPoint.setEnabled(false);
@@ -132,7 +132,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
                 break;
             }
 
-            case R.id.btn_addPoint:{
+            case R.id.btn_addPoint: {
                 String s = mDotName.getText().toString();
 
                 if (Double.isNaN(MainActivity.getDroneLocationLat()) || Double.isNaN(MainActivity.getDroneLocationLat())) {
@@ -217,7 +217,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         return mView;
     }
 
-    public boolean setDJICallback(){
+    public boolean setDJIUpdateStateCallback(boolean b) {
         DJIBaseProduct mProduct = DjiSdkApplication.getProductInstance();
         DJIFlightController mFlightController = null;
 
@@ -231,20 +231,29 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         }
         //当连接的产品为DJIAircraft时执行
         if (mFlightController != null) {
-            mFlightController.setUpdateSystemStateCallback(new DJIFlightControllerDelegate.FlightControllerUpdateSystemStateCallback() {
-                @Override
-                public void onResult(DJIFlightControllerDataType.DJIFlightControllerCurrentState state) {
-                    MainActivity.mDroneLocationLat = state.getAircraftLocation().getLatitude();
-                    MainActivity.mDroneLocationLng = state.getAircraftLocation().getLongitude();
-                    updateDroneLocation();
-                    cameraUpdate();
-                    updateUI();
-                }
-            });
+            if (b) {
+                mFlightController.setUpdateSystemStateCallback(new DJIFlightControllerDelegate.FlightControllerUpdateSystemStateCallback() {
+                    @Override
+                    public void onResult(DJIFlightControllerDataType.DJIFlightControllerCurrentState state) {
+                        MainActivity.mDroneLocationLat = state.getAircraftLocation().getLatitude();
+                        MainActivity.mDroneLocationLng = state.getAircraftLocation().getLongitude();
+                        updateDroneLocation();
+                        cameraUpdate();
+                        updateUI();
+                    }
+                });
+            } else {
+                mFlightController.setUpdateSystemStateCallback(new DJIFlightControllerDelegate.FlightControllerUpdateSystemStateCallback() {
+                    @Override
+                    public void onResult(DJIFlightControllerDataType.DJIFlightControllerCurrentState state) {
+                        MainActivity.mDroneLocationLat = state.getAircraftLocation().getLatitude();
+                        MainActivity.mDroneLocationLng = state.getAircraftLocation().getLongitude();
+                    }
+                });
+            }
         } else {
             return false;
         }
-
         return true;
     }
 
@@ -269,13 +278,15 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
+        setDJIUpdateStateCallback(false);
     }
 
     /* ---- AMap 方法 ---- */
     /*
      * 更新高德地图显示
      */
-    private void cameraUpdate(){
+    private void cameraUpdate() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -293,18 +304,21 @@ public class MapFragment extends Fragment implements View.OnClickListener,AMap.O
         //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
         mMapView.onDestroy();
     }
+
     @Override
     public void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，实现地图生命周期管理
         mMapView.onResume();
     }
+
     @Override
     public void onPause() {
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，实现地图生命周期管理
         mMapView.onPause();
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
