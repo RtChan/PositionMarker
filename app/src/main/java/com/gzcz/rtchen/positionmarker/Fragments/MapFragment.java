@@ -50,6 +50,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     Marker marker[] = new Marker[1024];
     int markerNumber = 1;
     List<LatLng> latlngs = new ArrayList<LatLng>();
+    List<Marker> markers = new ArrayList<Marker>();
     Button mButtonLocate = null;
 
 
@@ -118,7 +119,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     }
 
     public void markLocation(){
-        LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
+        final LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
         final MarkerOptions markerOptions= new MarkerOptions();
         markerOptions.position(pos);
 
@@ -126,8 +127,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             @Override
             public void run() {
                 if(MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())){
-                    marker[markerNumber] = mAMap.addMarker(markerOptions);
-                    markerNumber ++;
+//                    marker[markerNumber] = mAMap.addMarker(markerOptions);
+//                    markerNumber ++;
+
+                    markers.add(mAMap.addMarker(new MarkerOptions().position(pos)));
                 }
             }
         });
