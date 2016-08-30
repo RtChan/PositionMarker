@@ -95,13 +95,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         LatLng mOriginPos = new LatLng(23.1414, 113.319);
 //        mAMap.addMarker(new MarkerOptions().position(mOriginPos).title("Marker in Origin"));
 
-        ArrayList<LatLng> latlngs = new ArrayList<LatLng>();
+//        ArrayList<LatLng> latlngs = new ArrayList<LatLng>();
 
         for (PositionPoint p : MainActivity.dm.getPointsList()) {
             mAMap.addMarker(new MarkerOptions().position(new LatLng(p.getLatitude(),p.getLongitude())).title(p.getDotName()));
             latlngs.add(new LatLng(p.getLatitude(),p.getLongitude()));
         }
-        mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255, 1, 1, 1)));
+        mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255, 1, 1, 1)).visible(true));
         mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOriginPos, 17));
     }
 
