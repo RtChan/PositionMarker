@@ -34,20 +34,21 @@ import dji.sdk.base.DJIBaseProduct;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-            MapFragment.OnFragmentInteractionListener,
-            ProjectFragment.OnFragmentInteractionListener,
-            PointListFragment.OnFragmentInteractionListener,
-            ZXingQRFragment.OnFragmentInteractionListener{
+        MapFragment.OnFragmentInteractionListener,
+        ProjectFragment.OnFragmentInteractionListener,
+        PointListFragment.OnFragmentInteractionListener,
+        ZXingQRFragment.OnFragmentInteractionListener {
 
 
     /* 声明大疆SDK控件 */
-    static double mDroneLocationLat = 181, mDroneLocationLng = 181;
+    static public double mDroneLocationLat = 181, mDroneLocationLng = 181;
     DJIFlightController mFlightController;
 
-    static public double getDroneLocationLat(){
+    static public double getDroneLocationLat() {
         return mDroneLocationLat;
     }
-    static public double getDroneLocationLng(){
+
+    static public double getDroneLocationLng() {
         return mDroneLocationLng;
     }
 
@@ -136,8 +137,7 @@ public class MainActivity extends AppCompatActivity
     /*
      * 响应USB连接改变
      */
-    private void onProductConnectionChange()
-    {
+    private void onProductConnectionChange() {
         Toast toast = Toast.makeText(this, "In Connetcion Change [Rt]", Toast.LENGTH_SHORT);
         toast.show();
         initMissionManager();
@@ -159,9 +159,11 @@ public class MainActivity extends AppCompatActivity
                 public void onResult(DJIFlightControllerDataType.DJIFlightControllerCurrentState state) {
                     mDroneLocationLat = state.getAircraftLocation().getLatitude();
                     mDroneLocationLng = state.getAircraftLocation().getLongitude();
-//                    updateDroneLocation();
                 }
             });
+        } else {
+            mDroneLocationLat = 180.0;
+            mDroneLocationLng = 180.0;
         }
     }
 
@@ -213,9 +215,9 @@ public class MainActivity extends AppCompatActivity
         Class fragmentClass = null;
         if (id == R.id.nav_project) {
             fragmentClass = ProjectFragment.class;
-        } else if (id == R.id.nav_map){
+        } else if (id == R.id.nav_map) {
             fragmentClass = MapFragment.class;
-        }else {
+        } else {
             fragmentClass = ProjectFragment.class;
         }
 //        } else if (id == R.id.nav_gallery) {
