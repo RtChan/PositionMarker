@@ -25,6 +25,7 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.PolylineOptions;
+import com.amap.api.maps2d.model.TextOptions;
 import com.gzcz.rtchen.positionmarker.DjiSdkApplication;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
@@ -99,6 +100,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 
         for (PositionPoint p : MainActivity.dm.getPointsList()) {
             mAMap.addMarker(new MarkerOptions().position(new LatLng(p.getLatitude(),p.getLongitude())).title(p.getDotName()));
+            mAMap.addText(new TextOptions().position(new LatLng(p.getLatitude(), p.getLongitude())).text(p.getDotName()).fontColor(Color.BLACK).visible(true));
             latlngs.add(new LatLng(p.getLatitude(),p.getLongitude()));
         }
         mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255, 1, 1, 1)).visible(true));
