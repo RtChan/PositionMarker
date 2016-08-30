@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
@@ -7,13 +7,14 @@
     <!-- 序号区块 -->
     <!-- 需要设定 width 否则序号靠右需要滚动刷新后才会靠右 -->
     <LinearLayout
-        android:layout_width="60dp"
+        android:id="@+id/num"
+        android:layout_width="70dp"
         android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/mtv_num"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="end"
             android:text="序号"
             android:textSize="30sp" />
@@ -22,30 +23,38 @@
 
     <!-- 点名和坐标区块 -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_toEndOf="@+id/num"
+        android:layout_toStartOf="@+id/box"
+        android:layout_marginStart="10dp"
         android:orientation="vertical">
 
         <!-- 排放点名 -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/mtv_dotname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="点名"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/mtv_dotname"
+                    android:ellipsize="end"
+                    android:maxEms="13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="点名"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/mtv_dotnum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="点序号"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/mtv_dotnum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="序号"
+                    android:textStyle="bold" />
+
+
         </LinearLayout>
 
         <!-- 排放坐标 -->
@@ -70,9 +79,10 @@
 
     <!-- 使用LinerLayout将CheckBox放到最右 -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="right">
+        android:id="@+id/box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true">
 
         <CheckBox
             android:id="@+id/mcb"
@@ -82,4 +92,4 @@
     </LinearLayout>
 
 
-</LinearLayout>
+</RelativeLayout>
