@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.CoordinateConverter;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
@@ -53,6 +54,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     List<Marker> markers = new ArrayList<Marker>();
     Button mButtonLocate = null;
 
+    // TODO:删除此测试代码
+    static double testnum = 0;
 
     /* Fragment 用 */
     View mView = null;
@@ -98,10 +101,19 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
      * 在高德地图上更新无人机位置
      */
     public void updateDroneLocation() {
-        LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
+//        LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
+
+        CoordinateConverter converter = new CoordinateConverter();
+        // CoordType.GPS 待转换坐标类型
+        converter.from(CoordinateConverter.CoordType.GPS);
+        // sourceLatLng待转换坐标点 DPoint类型
+        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+        // 执行转换操作
+        final LatLng desLatLng = converter.convert();
+
         //Create MarkerOptions object
         final MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(pos);
+        markerOptions.position(desLatLng);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.aircraft));
 
         getActivity().runOnUiThread(new Runnable() {
@@ -118,27 +130,38 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         });
     }
 
-    public void markLocation(){
-        final LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
-        final MarkerOptions markerOptions= new MarkerOptions();
-        markerOptions.position(pos);
+    public void markLocation() {
+//        LatLng pos = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
+
+        CoordinateConverter converter = new CoordinateConverter();
+        // CoordType.GPS 待转换坐标类型
+        converter.from(CoordinateConverter.CoordType.GPS);
+        // sourceLatLng待转换坐标点 DPoint类型
+        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+        // 执行转换操作
+        final LatLng desLatLng = converter.convert();
+
+        final MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(desLatLng);
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())){
-//                    marker[markerNumber] = mAMap.addMarker(markerOptions);
-//                    markerNumber ++;
-
-                    markers.add(mAMap.addMarker(new MarkerOptions().position(pos)));
+                if (MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())) {
+                    markers.add(mAMap.addMarker(markerOptions));
                 }
             }
         });
     }
 
-    public void polyLine(){
+    public void polyLine() {
         latlngs.add(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
-        mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255,1,1,1)));
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAMap.addPolyline(new PolylineOptions().addAll(latlngs).width(10).color(Color.argb(255, 1, 1, 1)));
+            }
+        });
     }
 
     @Override
@@ -153,7 +176,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
      */
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.locate: {
                 if (setDJIUpdateStateCallback(true)) {
@@ -173,7 +195,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 
                 if (s.isEmpty()) s = "null";
                 MainActivity.dm.addPoint(new PositionPoint(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng(), s));
-
+                //TODO：删除此测试代码
+//                MainActivity.dm.addPoint(new PositionPoint(23.150+testnum, 113.350+testnum, s));
+//                testnum += 1;
                 markLocation();
                 polyLine();
                 break;
@@ -259,8 +283,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             if (mProduct instanceof DJIAircraft) {
                 mFlightController = ((DJIAircraft) mProduct).getFlightController();
             }
-        } else {
-            return false;
         }
         //当连接的产品为DJIAircraft时执行
         if (mFlightController != null) {
@@ -284,10 +306,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
                     }
                 });
             }
-        } else {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void onButtonPressed(Uri uri) {
@@ -320,10 +341,18 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
      * 更新高德地图显示
      */
     private void cameraUpdate() {
+        CoordinateConverter converter = new CoordinateConverter();
+        // CoordType.GPS 待转换坐标类型
+        converter.from(CoordinateConverter.CoordType.GPS);
+        // sourceLatLng待转换坐标点 DPoint类型
+        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+        // 执行转换操作
+        final LatLng desLatLng = converter.convert();
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()), 18));
+                mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(desLatLng, 18));
             }
         });
     }

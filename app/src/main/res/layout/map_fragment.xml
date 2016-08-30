@@ -81,8 +81,8 @@
             android:layout_height="wrap_content"
             android:text="ADD"
             android:id="@+id/btn_addPoint"
-            android:enabled="false" />
-
+            android:enabled="true" />
+<!--TODO：修改为false-->
     </LinearLayout>
 
 
