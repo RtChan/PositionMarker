@@ -181,6 +181,7 @@ public class PointListFragment extends Fragment {
                 return;
             }
 
+            //Check Box 选择完毕之后，进行数据的连接，将数据全部放入一个字符串中
             QRcodebuf = new StringBuilder();
             DecimalFormat df = new DecimalFormat("#.0000");
             for (ListViewPositionPoint p : mList) {
@@ -194,6 +195,7 @@ public class PointListFragment extends Fragment {
                 QRcodebuf.append(QRcodelatbuf + " " + QRcodelngbuf);
             }
 
+            //字符串 QRcodebuf 通过 bundle 传输到另外的fragment 之中，注意：fragment 只能 commit 一次
             if (!QRcodebuf.toString().isEmpty()) {
                 ZXingQRFragment zxingqrfragment = new ZXingQRFragment();
                 Bundle args = new Bundle();
