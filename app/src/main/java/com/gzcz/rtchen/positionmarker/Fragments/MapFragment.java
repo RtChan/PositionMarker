@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +19,6 @@ import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.CoordinateConverter;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
@@ -31,6 +31,7 @@ import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.PositionPointView;
 import com.gzcz.rtchen.positionmarker.R;
+import com.gzcz.rtchen.positionmarker.Utils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -98,10 +99,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         }
 
         if (null == MainActivity.dm.getPointViewsList() || MainActivity.dm.getPointViewsList().isEmpty()) {
+            Log.d("TAG", "initMapView: "+"default camera");
             mPos = new LatLng(23.1414, 113.319);
             mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mPos, 17));
+            return;
         }
 
+        Log.d("TAG", "initMapView: " + MainActivity.dm.getCurrentProjectName());
+        mLatLngs.clear();
+        mAMap.clear();
         for (PositionPointView p : MainActivity.dm.getPointViewsList()) {
             mPos = new LatLng(p.getLatitude(), p.getLongitude());
             //TODO:使用工具类转换坐标系
@@ -118,10 +124,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
      * 在高德地图上更新无人机位置
      */
     public void updateDroneLocation() {
-        CoordinateConverter converter = new CoordinateConverter();
-        converter.from(CoordinateConverter.CoordType.GPS);
-        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
-        final LatLng desLatLng = converter.convert();
+//        CoordinateConverter converter = new CoordinateConverter();
+//        converter.from(CoordinateConverter.CoordType.GPS);
+//        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+//        final LatLng desLatLng = converter.convert();
+        LatLng desLatLng = Utils.GPStoAMAP(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
 
         //Create MarkerOptions object
         final MarkerOptions markerOptions = new MarkerOptions();
@@ -143,10 +150,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     }
 
     public void markNewLocation(LatLng l) {
-        CoordinateConverter converter = new CoordinateConverter();
-        converter.from(CoordinateConverter.CoordType.GPS);
-        converter.coord(l);
-        final LatLng desLatLng = converter.convert();
+//        CoordinateConverter converter = new CoordinateConverter();
+//        converter.from(CoordinateConverter.CoordType.GPS);
+//        converter.coord(l);
+//        final LatLng desLatLng = converter.convert();
+
+        LatLng desLatLng = Utils.GPStoAMAP(l);
 
         DecimalFormat df = new DecimalFormat("#.0000");
 
@@ -166,14 +175,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     }
 
     public void polyNewLine(LatLng l) {
-        CoordinateConverter converter = new CoordinateConverter();
-        converter.from(CoordinateConverter.CoordType.GPS);
-        converter.coord(l);
-        final LatLng desLatLng = converter.convert();
+//        CoordinateConverter converter = new CoordinateConverter();
+//        converter.from(CoordinateConverter.CoordType.GPS);
+//        converter.coord(l);
+//        final LatLng desLatLng = converter.convert();
 
-        /*
-         * 注意：使用PolylineOptions().add()方法添加连线点无效！
-         */
+        LatLng desLatLng = Utils.GPStoAMAP(l);
+
         mLatLngs.add(desLatLng);
 
         getActivity().runOnUiThread(new Runnable() {
@@ -277,7 +285,20 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         mSpinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, MainActivity.dm.getProjectsList());
         mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(mSpinnerAdapter);
-//        mSpinner.setOnItemSelectedListener();
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("TAG", "onItemSelected: "+position);
+                MainActivity.dm.setCurrentProject(position);
+                MainActivity.dm.getPointViewsList();
+                initMapView();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                ;
+            }
+        });
 
         mDotName = (EditText) mView.findViewById(R.id.et_dotname);
         mAddPoint = (Button) mView.findViewById(R.id.btn_addPoint);
@@ -359,13 +380,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
      * 更新高德地图显示
      */
     private void cameraUpdate() {
-        CoordinateConverter converter = new CoordinateConverter();
-        // CoordType.GPS 待转换坐标类型
-        converter.from(CoordinateConverter.CoordType.GPS);
-        // sourceLatLng待转换坐标点 DPoint类型
-        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
-        // 执行转换操作
-        final LatLng desLatLng = converter.convert();
+//        CoordinateConverter converter = new CoordinateConverter();
+//        // CoordType.GPS 待转换坐标类型
+//        converter.from(CoordinateConverter.CoordType.GPS);
+//        // sourceLatLng待转换坐标点 DPoint类型
+//        converter.coord(new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng()));
+//        // 执行转换操作
+//        final LatLng desLatLng = converter.convert();
+
+        final LatLng desLatLng = Utils.GPStoAMAP(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
 
         getActivity().runOnUiThread(new Runnable() {
             @Override

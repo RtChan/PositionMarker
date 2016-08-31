@@ -83,8 +83,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             Fragment fragment = null;
-            Class fragmentClass = null;
-            fragmentClass = ProjectFragment.class;  // 设置初始界面
+            Class fragmentClass = ProjectFragment.class;  // 设置初始界面
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {

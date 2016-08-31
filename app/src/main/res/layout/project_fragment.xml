@@ -9,7 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <!-- 防止界面启动时EditText控件默认获得焦点弹出键盘 -->
+        <requestFocus/>
 
         <EditText
             android:id="@+id/edit_view_prj"

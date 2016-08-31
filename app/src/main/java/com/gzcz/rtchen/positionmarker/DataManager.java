@@ -3,10 +3,12 @@ package com.gzcz.rtchen.positionmarker;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -14,6 +16,7 @@ import java.util.ArrayList;
  */
 public class DataManager {
     private static final String PROJECTLISTFILENAME = "_ProjectList";
+    private static final String PACKAGENAME = "com.gzcz.rtchen.positionmarker";
     private Context mContext = null;
 
     private ArrayList<String> mProjectsList = null;
@@ -30,6 +33,7 @@ public class DataManager {
         initProjectsList();
         readProjectsListFromFile();
     }
+
     private void initProjectsList() {
         SharedPreferences sp = mContext.getSharedPreferences(PROJECTLISTFILENAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -70,18 +74,20 @@ public class DataManager {
     }
 
     public int setCurrentProject(int index) {
+        // 工程名列表未被初始化
+        if (null == mProjectsList) return -1;
         // 输入错误
-        if (index <= 0) {
+        if (index < 0) {
             mCurrentProject = null;
             return -1;
         }
         // 索引越界
-        if (index > mProjectsList.size()) {
+        if (index > mProjectsList.size()-1) {
             mCurrentProject = null;
             return -1;
         }
         // 正常
-        this.mCurrentProject = mProjectsList.get(index - 1).toString();
+        this.mCurrentProject = mProjectsList.get(index);
         readPointsListFromeFile();
         return index;
     }
@@ -93,25 +99,18 @@ public class DataManager {
     public int addProject(String name) {
         // 工程名列表未被初始化
         if (null == mProjectsList) return -1;
-        // 工程名列表为空
-//        if (mProjectsList.isEmpty()) {
-//            mProjectsList.add(name);
-//            saveProjectsListToFile();
-//        }
         // 判断工程是否已存在列表当中
-        if (mProjectsList.contains(name)) {
-            ;
-        } else {
+        if (!mProjectsList.contains(name)) {
             mProjectsList.add(name);
             saveProjectsListToFile();
-
+            // 初始化新工程的数据文件
             SharedPreferences sp = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
             editor.putInt("Total", 0);
             editor.apply();
         }
         // 返回工程名在列表中的索引
-        return mProjectsList.indexOf(name) + 1;
+        return mProjectsList.indexOf(name);
     }
 
     public int removeProject(String name) {
@@ -122,7 +121,14 @@ public class DataManager {
             if (mCurrentProject.equals(name)) mCurrentProject = null;
             int index = mProjectsList.indexOf(name);
             mProjectsList.remove(name);
+            // 保存修改到工程列表文件
             saveProjectsListToFile();
+            // 删除数据文件
+            File file= new File("/data/data/"+ PACKAGENAME+"/shared_prefs",name +".xml");
+            if(file.exists()){
+                file.delete();
+            }
+            // 返回被删条目原索引
             return index;
         } else {
             return -1;
@@ -159,17 +165,20 @@ public class DataManager {
     }
 
     private void convertPointsListToPointViewsList() {
+        getPointsList();
         if (null == mPointsList) return;
 
         mPointViewsList = new ArrayList<PositionPointView>();
-        if (mPointsList.isEmpty()) return;
+
+        if (mPointsList.isEmpty()) return;  // 列表为空
 
         int currentNum = 0;
         int currentDotNum = 0;
+        Log.d("TAG", "convertPointsListToPointViewsList: " + mPointsList.get(0).toString());
         String currentDotName = mPointsList.get(0).getDotName();
 
         for (PositionPoint p : mPointsList) {
-            if (!p.getDotName().equals(currentDotName)) {
+            if (!p.getDotName().equals(currentDotName)) {   // 判断点名是否改变
                 currentDotNum = 0;
                 currentDotName = p.getDotName();
             }
@@ -184,43 +193,57 @@ public class DataManager {
     private void saveProjectsListToFile() {
         SharedPreferences sp = mContext.getSharedPreferences(PROJECTLISTFILENAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
+
+        if (null == mProjectsList) return; // 列表未被初始化
+
         int i = 0;
         try {
             for (String s : mProjectsList) {
-                i += 1;
                 editor.putString(Integer.toString(i), s);
+                i += 1;
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
             i = -1;
         }
 
-        if (i == 0) ;
-        else {
-            editor.putInt("Total", i);
-            editor.apply();
+        // 写入失败，清除缓存文件
+        if (-1 == i) {
+            editor.clear().apply();
+            return;
         }
+
+        // 写入成功，更新“Total”标签
+        editor.putInt("Total", i);
+        editor.apply();
     }
 
     private void savePointsListToFile() {
         SharedPreferences sp = mContext.getSharedPreferences(mCurrentProject, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
+
+        if (null == mPointsList) return; // 列表未被初始化
+
         int i = 0;
         try {
             for (PositionPoint p : mPointsList) {
-                i += 1;
                 editor.putString(Integer.toString(i), getJsonObjectFromPoint(p).toString());
+                i += 1;
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
             i = -1;
         }
 
-        if (i == 0) ;
-        else {
-            editor.putInt("Total", i);
-            editor.apply();
+        // 写入失败，清除缓存文件
+        if (-1 == i) {
+            editor.clear().apply();
+            return;
         }
+
+        // 写入成功，更新“Total”标签
+        editor.putInt("Total", i);
+        editor.apply();
     }
 
     private void readProjectsListFromFile() {
@@ -230,17 +253,17 @@ public class DataManager {
         int total = 0;
         int i = 1;
         total = sp.getInt("Total", -1);
-        if (-1 == total) {
+        if (-1 == total) {  // 列表非法初始化
             mProjectsList = null;
             return;
-        } else if (0 == total) {
+        } else if (0 == total) {    // 列表为空
             mProjectsList = new ArrayList<>();
             return;
         }
 
         String s = null;
         try {
-            for (i = 1; i <= total; ++i) {
+            for (i = 0; i < total; ++i) {
                 s = sp.getString(Integer.toString(i), "");
                 list.add(s);
             }
@@ -249,6 +272,13 @@ public class DataManager {
             i = -1;
         }
 
+        // 读取发生错误
+        if (-1 == i) {
+            mPointsList = null;
+            return;
+        }
+
+        // 读取成功
         mProjectsList = list;
     }
 
@@ -258,19 +288,19 @@ public class DataManager {
 
         SharedPreferences sp = mContext.getSharedPreferences(mCurrentProject, Context.MODE_PRIVATE);
 
-        int i = 1;
+        int i = 0;
         int total = sp.getInt("Total", -1);
-        if (-1 == total) {
+        if (-1 == total) {  //列表非法初始化
             mPointsList = null;
             return;
-        } else if (0 == total) {
+        } else if (0 == total) {    //列表为空
             mPointsList = new ArrayList<>();
             return;
         }
 
         String s = null;
         try {
-            for (i = 1; i <= total; ++i) {
+            for (i = 0; i < total; ++i) {
                 s = sp.getString(Integer.toString(i), "");
                 list.add(getPointFromJsonObject(s));
             }
@@ -279,8 +309,13 @@ public class DataManager {
             i = -1;
         }
 
-        if ((-1 == i) && (0 != total)) mPointsList = null;
+        // 读取发生错误
+        if (-1 == i) {
+            mPointsList = null;
+            return;
+        }
 
+        // 读取成功
         mPointsList = list;
     }
 

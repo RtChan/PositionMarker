@@ -112,8 +112,8 @@ public class ProjectFragment extends Fragment
                 Fragment fragment = null;
                 Class fragmentClass = null;
 
-                //TODO: 统一序号从0开始
-                MainActivity.dm.setCurrentProject(i+1);
+                //TODO: 统一序号从0开始 -> 已处理，需验证是否OK
+                MainActivity.dm.setCurrentProject(i);
 
                 fragmentClass = PointListFragment.class;
                 try {
@@ -122,7 +122,7 @@ public class ProjectFragment extends Fragment
                     e.printStackTrace();
                 }
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
             }
         });
 
