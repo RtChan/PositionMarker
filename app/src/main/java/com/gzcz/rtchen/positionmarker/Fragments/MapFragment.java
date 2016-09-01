@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.PolylineOptions;
 import com.amap.api.maps2d.model.TextOptions;
+import com.gzcz.rtchen.positionmarker.BaseFpvView;
 import com.gzcz.rtchen.positionmarker.DjiSdkApplication;
 import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
@@ -76,6 +79,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     ArrayAdapter<String> mSpinnerAdapter = null;
     EditText mDotName = null;
     Button mAddPoint = null;
+    Boolean mFpvSize = false;
 
     public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
@@ -292,6 +296,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         mMapView = (MapView) mView.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
 
+        BaseFpvView bfv = (BaseFpvView) mView.findViewById(R.id.view);
+        bfv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adjustFpvSize();
+            }
+        });
 //        mButtonQRcode = (Button)mView.findViewById(R.id.btn_add_qrcode);
 //        mButtonQRcode.setOnClickListener(this);
 //        qrImageView = (ImageView)mView.findViewById(R.id.iv_qr_image);
@@ -323,9 +334,33 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             mSpinner.setSelection(MainActivity.dm.getProjectsList().indexOf(MainActivity.dm.getCurrentProjectName()), true);
         }
 
+        MainActivity.dm.getPointViewsList();
         initMapView();
 
         return mView;
+    }
+
+    public void adjustFpvSize() {
+        DisplayMetrics metric = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metric);
+        int width = metric.widthPixels;     // 屏幕宽度（像素）
+        int height = metric.heightPixels;     // 屏幕高度（像素）
+
+        BaseFpvView bfv = (BaseFpvView) mView.findViewById(R.id.view);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) bfv.getLayoutParams();
+        if (false == mFpvSize) { // 从小变大
+            if (height > width) {   // 竖屏
+                layoutParams.width = width;
+                layoutParams.height = width / Utils.dip2px(getContext(), 160) * Utils.dip2px(getContext(), 120);
+            } else { // 横屏
+                mFpvSize = !mFpvSize;
+            }
+        } else {    // 从大变小
+            layoutParams.width = Utils.dip2px(getContext(), 160);
+            layoutParams.height = Utils.dip2px(getContext(), 120);
+        }
+        bfv.setLayoutParams(layoutParams);
+        mFpvSize = !mFpvSize;
     }
 
     public boolean setDJIUpdateStateCallback(boolean b) {

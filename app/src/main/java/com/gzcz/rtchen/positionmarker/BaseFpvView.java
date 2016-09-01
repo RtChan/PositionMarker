@@ -92,7 +92,11 @@ public class BaseFpvView extends RelativeLayout implements TextureView.SurfaceTe
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
+        if (mCodecManager != null) {
+            mCodecManager.cleanSurface();
+            mCodecManager = null;
+            mCodecManager = new DJICodecManager(getContext(), surface, width, height);
+        }
     }
 
     @Override

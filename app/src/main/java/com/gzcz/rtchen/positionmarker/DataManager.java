@@ -31,7 +31,14 @@ public class DataManager {
     public DataManager(Context c) {
         mContext = c;
         initProjectsList();
+        initLastStatement();
         readProjectsListFromFile();
+    }
+
+    private void initLastStatement(){
+        mLastNum = 0;
+        mLastDotNum = 0;
+        mLastDotName = "";
     }
 
     private void initProjectsList() {
@@ -63,6 +70,9 @@ public class DataManager {
 
     public String getLastDotNameAndNum() {
         StringBuilder sb = new StringBuilder();
+
+        getPointViewsList();
+
         sb.append(mLastDotName);
         sb.append(mLastDotNum);
         return sb.toString();
@@ -170,7 +180,10 @@ public class DataManager {
 
         mPointViewsList = new ArrayList<PositionPointView>();
 
-        if (mPointsList.isEmpty()) return;  // 列表为空
+        if (mPointsList.isEmpty()) {// 列表为空
+            initLastStatement();
+            return;
+        }
 
         int currentNum = 0;
         int currentDotNum = 0;

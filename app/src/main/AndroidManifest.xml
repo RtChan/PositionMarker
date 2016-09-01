@@ -52,6 +52,14 @@
 
         <service android:name="dji.sdk.SDKManager.DJIGlobalService" />
 
+        <!-- 适配屏幕宽度用 -->
+        <supports-screens
+            android:smallScreens="true"
+            android:normalScreens="true"
+            android:largeScreens="true"
+            android:resizeable="true"
+            android:anyDensity="true" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
