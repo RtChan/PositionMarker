@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +119,8 @@ public class PointListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Log.d("WHEN", "onCreateView: Point");
+
         mView = inflater.inflate(R.layout.pointlist_fragment, container, false);
         mListView = (ListView) mView.findViewById(R.id.list);
 
@@ -219,6 +222,7 @@ public class PointListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d("WHEN", "onAttach: Point");
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -230,7 +234,14 @@ public class PointListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d("WHEN", "onDetach: Point");
         mListener = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("WHEN", "onPause: Point");
     }
 
     /**

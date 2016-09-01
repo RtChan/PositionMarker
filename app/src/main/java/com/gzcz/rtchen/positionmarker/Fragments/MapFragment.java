@@ -98,26 +98,31 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             mAMap.setOnMapClickListener(this);// add the listener for click for amap object
         }
 
+        mLatLngs.clear();
+        mAMap.clear();
+
+        TextOptions tx = new TextOptions().align(1,0).text("heihie").position(new LatLng(1,1));
+        Log.d("TAG", "initMapView: " + tx.getFontSize());
+
         if (null == MainActivity.dm.getPointViewsList() || MainActivity.dm.getPointViewsList().isEmpty()) {
             Log.d("TAG", "initMapView: "+"default camera");
             mPos = new LatLng(23.1414, 113.319);
+            mPos = Utils.GPStoAMAP(mPos);
             mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mPos, 17));
             return;
         }
 
         Log.d("TAG", "initMapView: " + MainActivity.dm.getCurrentProjectName());
-        mLatLngs.clear();
-        mAMap.clear();
         for (PositionPointView p : MainActivity.dm.getPointViewsList()) {
             mPos = new LatLng(p.getLatitude(), p.getLongitude());
-            //TODO:使用工具类转换坐标系
+            LatLng mAMapPos = Utils.GPStoAMAP(mPos);
             DecimalFormat df = new DecimalFormat("#.0000");
-            mAMap.addMarker(new MarkerOptions().position(mPos).title(p.getDotNameAndNum()).snippet(df.format(p.getLatitude()) + "," + df.format(p.getLongitude())));
-            mAMap.addText(new TextOptions().position(mPos).text(p.getDotNameAndNum()).fontColor(Color.BLACK).visible(true));
-            mLatLngs.add(new LatLng(p.getLatitude(),p.getLongitude()));
+            mAMap.addMarker(new MarkerOptions().position(mAMapPos).title(p.getDotNameAndNum()).snippet(df.format(p.getLatitude()) + "," + df.format(p.getLongitude())));
+            mAMap.addText(new TextOptions().position(mAMapPos).text(p.getDotNameAndNum()).align(1,0).fontSize(40).fontColor(Color.BLACK).visible(true));
+            mLatLngs.add(mAMapPos);
         }
         mAMap.addPolyline(new PolylineOptions().addAll(mLatLngs).width(5).color(Color.argb(255, 1, 1, 1)).visible(true));
-        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mPos, 17));
+        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLngs.get(mLatLngs.size()-1), 17));
     }
 
     /*
@@ -155,7 +160,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 //        converter.coord(l);
 //        final LatLng desLatLng = converter.convert();
 
-        LatLng desLatLng = Utils.GPStoAMAP(l);
+        final LatLng desLatLng = Utils.GPStoAMAP(l);
 
         DecimalFormat df = new DecimalFormat("#.0000");
 
@@ -164,11 +169,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         markerOptions.title(MainActivity.dm.getLastDotNameAndNum());
         markerOptions.snippet(df.format(desLatLng.latitude) + "," + df.format(desLatLng.longitude));
 
+        final TextOptions textOptions= new TextOptions().position(desLatLng).text(MainActivity.dm.getLastDotNameAndNum()).align(1,0).fontSize(40).fontColor(Color.BLACK).visible(true);
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (MainActivity.checkGpsCoordination(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng())) {
                     markers.add(mAMap.addMarker(markerOptions));
+                    mAMap.addText(textOptions);
                 }
             }
         });
@@ -187,7 +195,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAMap.addPolyline(new PolylineOptions().addAll(mLatLngs).width(10).color(Color.BLACK).visible(true));
+                mAMap.addPolyline(new PolylineOptions().addAll(mLatLngs).width(5).color(Color.BLACK).visible(true));
             }
         });
     }
@@ -195,7 +203,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("WHERE", "MapFragment onCreate()");
+        Log.d("WHEN", "onCreate: MapF");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("WHEN", "onDestroyView: MapF");
     }
 
     /* ---- 更新UI 方法 ---- */
@@ -269,6 +283,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("WHEN", "onCreateView: MapF");
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.map_fragment, container, false);
 
@@ -369,6 +384,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 
     @Override
     public void onDetach() {
+        Log.d("WHEN", "onDetach: MapF");
         super.onDetach();
         mListener = null;
 
