@@ -9,6 +9,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
@@ -16,6 +19,7 @@ import java.util.ArrayList;
  */
 public class DataManager {
     private static final String PROJECTLISTFILENAME = "_ProjectList";
+    private static final String ACTIVATIONFILENAME = "_Activation";
     private static final String PACKAGENAME = "com.gzcz.rtchen.positionmarker";
     private Context mContext = null;
 
@@ -30,6 +34,7 @@ public class DataManager {
 
     public DataManager(Context c) {
         mContext = c;
+        initActivation();
         initProjectsList();
         initLastStatement();
         readProjectsListFromFile();
@@ -49,6 +54,80 @@ public class DataManager {
         if (-1 == total) {
             editor.putInt("Total", 0);
             editor.apply();
+        }
+    }
+
+    private void initActivation(){
+        SharedPreferences sp = mContext.getSharedPreferences(PROJECTLISTFILENAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+
+        String key = sp.getString("Key", null);
+        if (null == key) {
+            editor.putString("Key","null");
+            editor.apply();
+        }
+    }
+
+    public void setActivationKey(String newKey) {
+        SharedPreferences sp = mContext.getSharedPreferences(PROJECTLISTFILENAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+
+        String key = sp.getString("Key", null);
+        if (null == key) {
+            return;
+        } else {
+            editor.putString("Key", newKey);
+            editor.apply();
+        }
+    }
+
+    public boolean isActivated(String imei) {
+        String StoredKey = getActivationKey();
+        if (null == StoredKey) {
+            return false;
+        }
+
+        long Imei = Long.valueOf(imei);
+        Imei += 38608338;
+        StringBuilder src = new StringBuilder();
+        src.append(String.valueOf(Imei));
+        src.append("433");
+
+        byte[] hash;
+        try {
+            hash = MessageDigest.getInstance("MD5").digest(src.toString().getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return false;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+        for (byte b : hash) {
+               if ((b & 0xFF) < 0x10)
+                      hex.append("0");
+               hex.append(Integer.toHexString(b & 0xFF));
+        }
+
+        Log.d("LOGIN", "isActivated: " + hex.toString());
+
+        if (StoredKey.equalsIgnoreCase(hex.toString())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private String getActivationKey() {
+        SharedPreferences sp = mContext.getSharedPreferences(PROJECTLISTFILENAME, Context.MODE_PRIVATE);
+
+        String key = sp.getString("Key", null);
+        if (null == key) {
+            return null;
+        } else {
+            return key;
         }
     }
 

@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,6 +61,15 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /* 实例化 DataManager */
+        dm = new DataManager(this);
+
+        /* 判断软件是否已激活 */
+        TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
+        if (!dm.isActivated(telephonyManager.getDeviceId())) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
         //当目标编译工具版本高于22时，请申请以下权限以保证SDK可以正常工作
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -112,9 +122,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        /* 实例化 DataManager */
-        dm = new DataManager(this);
 
          /* 注册BroadcastReceiver以检测产品连接状态  */
         IntentFilter filter = new IntentFilter();

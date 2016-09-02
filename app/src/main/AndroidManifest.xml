@@ -10,6 +10,12 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <!-- 大疆SDK的USB权限 -->
     <uses-feature
         android:name="android.hardware.usb.host"
@@ -17,6 +23,11 @@
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="true" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".DjiSdkApplication"
@@ -54,11 +65,11 @@
 
         <!-- 适配屏幕宽度用 -->
         <supports-screens
-            android:smallScreens="true"
-            android:normalScreens="true"
+            android:anyDensity="true"
             android:largeScreens="true"
+            android:normalScreens="true"
             android:resizeable="true"
-            android:anyDensity="true" />
+            android:smallScreens="true" />
 
         <activity
             android:name=".MainActivity"
@@ -70,6 +81,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>
