@@ -1,4 +1,4 @@
-package com.gzcz.rtchen.positionmarker;
+package com.gzcz.rtchen.positionmarker.Fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.WriterException;
+import com.gzcz.rtchen.positionmarker.R;
+import com.gzcz.rtchen.positionmarker.ZXingQR;
 
 
 /**

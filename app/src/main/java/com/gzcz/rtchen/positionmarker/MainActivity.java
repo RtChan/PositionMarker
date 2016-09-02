@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.gzcz.rtchen.positionmarker.Fragments.MapFragment;
 import com.gzcz.rtchen.positionmarker.Fragments.PointListFragment;
 import com.gzcz.rtchen.positionmarker.Fragments.ProjectFragment;
+import com.gzcz.rtchen.positionmarker.Fragments.ZXingQRFragment;
 
 import dji.sdk.FlightController.DJIFlightController;
 import dji.sdk.FlightController.DJIFlightControllerDataType;

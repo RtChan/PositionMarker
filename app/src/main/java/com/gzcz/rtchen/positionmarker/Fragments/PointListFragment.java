@@ -21,7 +21,6 @@ import com.gzcz.rtchen.positionmarker.MainActivity;
 import com.gzcz.rtchen.positionmarker.MyListViewAdapter;
 import com.gzcz.rtchen.positionmarker.PositionPoint;
 import com.gzcz.rtchen.positionmarker.R;
-import com.gzcz.rtchen.positionmarker.ZXingQRFragment;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
