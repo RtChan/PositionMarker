@@ -96,6 +96,7 @@ public class ProjectFragment extends Fragment
         btn_add_prj = (Button) mView.findViewById(R.id.btn_add_prj);
         btn_add_prj.setOnClickListener(this);
 
+        /* 读取 DataManager */
         Array_List_prj = MainActivity.dm.getProjectsList();
 
         MainActivity c = (MainActivity) getContext();
@@ -112,7 +113,6 @@ public class ProjectFragment extends Fragment
                 Fragment fragment = null;
                 Class fragmentClass = null;
 
-                //TODO: 统一序号从0开始 -> 已处理，需验证是否OK
                 MainActivity.dm.setCurrentProject(i);
 
                 fragmentClass = PointListFragment.class;
@@ -144,6 +144,20 @@ public class ProjectFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO：重命名工程
+                        AlertDialog.Builder in = new AlertDialog.Builder(getContext());
+                        in.setTitle("重命名该工程：" + list_view_prj.getItemAtPosition(position));
+                        final EditText et = new EditText(getContext());
+                        et.setHint("请输入新的名称");
+                        in.setView(et);
+                        in.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                MainActivity.dm.renameProject(position,et.getText().toString());
+                                Array_List_prj = MainActivity.dm.getProjectsList();
+                            }
+                        });
+                        in.setNegativeButton("取消", null);
+                        in.show();
                         ArrayAdapter_prj.notifyDataSetChanged();
                     }
                 });
@@ -152,9 +166,6 @@ public class ProjectFragment extends Fragment
                 return true; // 此处必须返回true，默认返回false时会重复执行单击事件
             }
         });
-
-        /* 读取 DataManager */
-//        MainActivity.dm.getProjectsList();
 
         // Inflate the layout for this fragment
         return mView;

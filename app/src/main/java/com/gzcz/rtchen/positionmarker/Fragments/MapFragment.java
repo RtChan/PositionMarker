@@ -44,6 +44,7 @@ import dji.sdk.FlightController.DJIFlightController;
 import dji.sdk.FlightController.DJIFlightControllerDataType;
 import dji.sdk.FlightController.DJIFlightControllerDelegate;
 import dji.sdk.Products.DJIAircraft;
+import dji.sdk.RemoteController.DJIRemoteController;
 import dji.sdk.base.DJIBaseProduct;
 
 /**
@@ -59,9 +60,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     List<LatLng> mLatLngs = new ArrayList<LatLng>();
     List<Marker> markers = new ArrayList<Marker>();
     Button mButtonLocate = null;
-
-    // TODO:删除此测试代码
-    static double testnum = 0;
 
     /* Fragment 用 */
     View mView = null;
@@ -80,6 +78,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     EditText mDotName = null;
     Button mAddPoint = null;
     Boolean mFpvSize = false;
+
+    DJIFlightController mFlightController = null;
+    DJIRemoteController mRemoteController = null;
 
     public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
@@ -105,11 +106,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         mLatLngs.clear();
         mAMap.clear();
 
-        TextOptions tx = new TextOptions().align(1,0).text("heihie").position(new LatLng(1,1));
-        Log.d("TAG", "initMapView: " + tx.getFontSize());
-
         if (null == MainActivity.dm.getPointViewsList() || MainActivity.dm.getPointViewsList().isEmpty()) {
-            Log.d("TAG", "initMapView: "+"default camera");
+            Log.d("TAG", "initMapView: " + "default camera");
             mPos = new LatLng(23.1414, 113.319);
             mPos = Utils.GPStoAMAP(mPos);
             mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mPos, 17));
@@ -122,11 +120,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             LatLng mAMapPos = Utils.GPStoAMAP(mPos);
             DecimalFormat df = new DecimalFormat("#.0000");
             mAMap.addMarker(new MarkerOptions().position(mAMapPos).title(p.getDotNameAndNum()).snippet(df.format(p.getLatitude()) + "," + df.format(p.getLongitude())));
-            mAMap.addText(new TextOptions().position(mAMapPos).text(p.getDotNameAndNum()).align(1,0).fontSize(40).fontColor(Color.BLACK).visible(true));
+            mAMap.addText(new TextOptions().position(mAMapPos).text(p.getDotNameAndNum()).align(1, 0).fontSize(40).fontColor(Color.BLACK).visible(true));
             mLatLngs.add(mAMapPos);
         }
         mAMap.addPolyline(new PolylineOptions().addAll(mLatLngs).width(5).color(Color.argb(255, 1, 1, 1)).visible(true));
-        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLngs.get(mLatLngs.size()-1), 17));
+        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLngs.get(mLatLngs.size() - 1), 17));
     }
 
     /*
@@ -173,7 +171,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         markerOptions.title(MainActivity.dm.getLastDotNameAndNum());
         markerOptions.snippet(df.format(desLatLng.latitude) + "," + df.format(desLatLng.longitude));
 
-        final TextOptions textOptions= new TextOptions().position(desLatLng).text(MainActivity.dm.getLastDotNameAndNum()).align(1,0).fontSize(40).fontColor(Color.BLACK).visible(true);
+        final TextOptions textOptions = new TextOptions().position(desLatLng).text(MainActivity.dm.getLastDotNameAndNum()).align(1, 0).fontSize(40).fontColor(Color.BLACK).visible(true);
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -224,7 +222,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.locate: {
-                if (setDJIUpdateStateCallback(true)) {
+                if (setDJICallback(true)) {
                     mAddPoint.setEnabled(true);
                 } else {
                     mAddPoint.setEnabled(false);
@@ -232,23 +230,28 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
                 break;
             }
             case R.id.btn_addPoint: {
-                String s = mDotName.getText().toString();
-
-                if (Double.isNaN(MainActivity.getDroneLocationLat()) || Double.isNaN(MainActivity.getDroneLocationLat())) {
-                    Toast.makeText(getContext(), "无人机无GPS信号！", Toast.LENGTH_SHORT).show();
-                    break;
-                }
-                if (s.isEmpty()) s = "null";
-
-                LatLng l = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
-                MainActivity.dm.addPoint(new PositionPoint(l.latitude, l.longitude, s));
-                markNewLocation(l);
-                polyNewLine(l);
+                addThePoint();
                 break;
             }
             default:
                 break;
         }
+    }
+
+    private void addThePoint() {
+        String s = mDotName.getText().toString();
+
+        if (Double.isNaN(MainActivity.getDroneLocationLat()) || Double.isNaN(MainActivity.getDroneLocationLat())) {
+            //TODO:测试用屏蔽
+//            Toast.makeText(getContext(), "无人机无GPS信号！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (s.isEmpty()) s = "null";
+
+        LatLng l = new LatLng(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
+        MainActivity.dm.addPoint(new PositionPoint(l.latitude, l.longitude, s));
+        markNewLocation(l);
+        polyNewLine(l);
     }
 
     private void updateUI() {
@@ -281,6 +284,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
 
     @Override
     public void onMapClick(LatLng point) {
+
     }
 
 
@@ -314,7 +318,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("TAG", "onItemSelected: "+position);
+                Log.d("TAG", "onItemSelected: " + position);
                 MainActivity.dm.setCurrentProject(position);
                 MainActivity.dm.getPointViewsList();
                 initMapView();
@@ -346,8 +350,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         int width = metric.widthPixels;     // 屏幕宽度（像素）
         int height = metric.heightPixels;     // 屏幕高度（像素）
 
-        BaseFpvView bfv = (BaseFpvView) mView.findViewById(R.id.view);
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) bfv.getLayoutParams();
+        final BaseFpvView bfv = (BaseFpvView) mView.findViewById(R.id.view);
+        final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) bfv.getLayoutParams();
         if (false == mFpvSize) { // 从小变大
             if (height > width) {   // 竖屏
                 layoutParams.width = width;
@@ -359,18 +363,25 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             layoutParams.width = Utils.dip2px(getContext(), 160);
             layoutParams.height = Utils.dip2px(getContext(), 120);
         }
-        bfv.setLayoutParams(layoutParams);
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                bfv.setLayoutParams(layoutParams);
+        }
+        });
+
         mFpvSize = !mFpvSize;
     }
 
-    public boolean setDJIUpdateStateCallback(boolean b) {
+    public boolean setDJICallback(boolean b) {
         DJIBaseProduct mProduct = DjiSdkApplication.getProductInstance();
-        DJIFlightController mFlightController = null;
 
         //已连接产品
         if (mProduct != null && mProduct.isConnected()) {
             if (mProduct instanceof DJIAircraft) {
                 mFlightController = ((DJIAircraft) mProduct).getFlightController();
+                mRemoteController = ((DJIAircraft) mProduct).getRemoteController();
             }
         }
         //当连接的产品为DJIAircraft时执行
@@ -395,9 +406,39 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
                     }
                 });
             }
-            return true;
+        } else {
+            return false;
         }
-        return false;
+        //当连接的产品有遥控器时
+        if (mRemoteController != null) {
+            if (b) {
+                Toast.makeText(getActivity(), "RC ok", Toast.LENGTH_SHORT).show();
+                mRemoteController.setHardwareStateUpdateCallback(new DJIRemoteController.RCHardwareStateUpdateCallback() {
+                    @Override
+                    public void onHardwareStateUpdate(DJIRemoteController djiRemoteController, DJIRemoteController.DJIRCHardwareState djircHardwareState) {
+//                        Toast.makeText(getActivity(), "inCallback", Toast.LENGTH_SHORT).show();
+                        if (djircHardwareState.customButton1.buttonDown) {
+//                            Toast.makeText(getActivity(), "左键按下：切换图传", Toast.LENGTH_SHORT).show();
+                            adjustFpvSize();
+                        }
+                        if (djircHardwareState.customButton2.buttonDown) {
+                            if (mAddPoint.isEnabled()) {
+//                                Toast.makeText(getActivity(), "右键按下：添加点", Toast.LENGTH_SHORT).show();
+                                addThePoint();
+                            } else {
+//                                Toast.makeText(getActivity(), "未能使用该按钮！", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+            } else {
+                mRemoteController.setHardwareStateUpdateCallback(null);
+            }
+            return true;
+        } else {
+            Toast.makeText(getActivity(), "RC off", Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
     public void onButtonPressed(Uri uri) {
@@ -423,7 +464,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         super.onDetach();
         mListener = null;
 
-        setDJIUpdateStateCallback(false);
+        setDJICallback(false);
     }
 
     /* ---- AMap 方法 ---- */
@@ -486,7 +527,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
      * to the activity and potentially other fragments contained
      * in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

@@ -145,6 +145,60 @@ public class DataManager {
         }
     }
 
+    public int renameProject(int index, String newName) {
+        // 工程名列表未被初始化
+        if (null == mProjectsList) return -1;
+        // 判断索引是否越界
+        if (index >= mProjectsList.size()) return -1;
+        // 判断索引是否非法
+        if (index < 0) return -1;
+
+        // 更改工程数据文件名称
+        String oldName = mProjectsList.get(index);
+        File oldFile = new File("/data/data/"+ PACKAGENAME+"/shared_prefs",oldName +".xml");
+        File newFile = new File("/data/data/"+ PACKAGENAME+"/shared_prefs",newName +".xml");
+        if(oldFile.exists()){
+            if (!oldFile.renameTo(newFile)) {
+                return -1;
+            }
+        }
+        // 更改工程名数组中的数据
+        mProjectsList.remove(index);
+        mProjectsList.add(newName);
+        index = mProjectsList.size() - 1;
+        // 保存数组数据至文件中
+        saveProjectsListToFile();
+        // 更新其他变量数据
+        setCurrentProject(index);
+        getPointViewsList();
+        return index;
+    }
+
+    public int renameProject(String oldName, String newName) {
+        // 工程名列表未被初始化
+        if (null == mProjectsList) return -1;
+        // 判断是否存在该工程
+        if (!mProjectsList.contains(oldName)) return -1;
+        // 更改工程数据文件名称
+        File oldFile = new File("/data/data/"+ PACKAGENAME+"/shared_prefs",oldName +".xml");
+        File newFile = new File("/data/data/"+ PACKAGENAME+"/shared_prefs",newName +".xml");
+        if(oldFile.exists()){
+            if (!oldFile.renameTo(newFile)) {
+                return -1;
+            }
+        }
+        // 更改工程名数组中的数据
+        mProjectsList.remove(oldName);
+        mProjectsList.add(newName);
+        int index = mProjectsList.size() - 1;
+        // 保存数组数据至文件中
+        saveProjectsListToFile();
+        // 更新其他变量数据
+        setCurrentProject(newName);
+        getPointViewsList();
+        return index;
+    }
+
     public int addPoint(PositionPoint p) {
         // 点列表未被初始化
         if (null == mPointsList) return -1;
