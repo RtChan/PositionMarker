@@ -21,7 +21,7 @@
             <!--android:title="N/A" />-->
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="More">
         <menu>
             <item
                 android:id="@+id/nav_share"
