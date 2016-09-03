@@ -15,6 +15,10 @@
     <string name="menu_point">坐标列表</string>
     <string name="menu_about">关于</string>
 
+    <!-- nav_header 原素 -->
+    <string name="nav_hearder_application_name">坐标记录器</string>
+    <string name="nav_hearder_company">成至智能科技</string>
+
     <!-- ProjectFragment 元素 -->
     <string name="btn_add_prj">添加工程</string>
     <string name="et_hint">输入工程名以添加工程</string>
