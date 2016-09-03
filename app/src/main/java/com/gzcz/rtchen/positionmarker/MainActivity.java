@@ -32,6 +32,7 @@ import dji.sdk.FlightController.DJIFlightController;
 import dji.sdk.FlightController.DJIFlightControllerDataType;
 import dji.sdk.FlightController.DJIFlightControllerDelegate;
 import dji.sdk.Products.DJIAircraft;
+import dji.sdk.RemoteController.DJIRemoteController;
 import dji.sdk.base.DJIBaseProduct;
 
 public class MainActivity extends AppCompatActivity
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     /* 声明大疆SDK控件 */
     static public double mDroneLocationLat = 181, mDroneLocationLng = 181;
     DJIFlightController mFlightController;
+    DJIRemoteController mRemoteController;
 
     static public double getDroneLocationLat() {
         return mDroneLocationLat;
@@ -65,11 +67,11 @@ public class MainActivity extends AppCompatActivity
         dm = new DataManager(this);
 
         /* 判断软件是否已激活 */
-        TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
-        if (!dm.isActivated(telephonyManager.getDeviceId())) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-        }
+//        TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
+//        if (!dm.isActivated(telephonyManager.getDeviceId())) {
+//            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//            startActivity(intent);
+//        }
 
         //当目标编译工具版本高于22时，请申请以下权限以保证SDK可以正常工作
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -157,6 +159,7 @@ public class MainActivity extends AppCompatActivity
         if (mProduct != null && mProduct.isConnected()) {
             if (mProduct instanceof DJIAircraft) {
                 mFlightController = ((DJIAircraft) mProduct).getFlightController();
+                mRemoteController = ((DJIAircraft) mProduct).getRemoteController();
             }
         }
         //当连接的产品为DJIAircraft时执行
@@ -171,6 +174,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             mDroneLocationLat = 180.0;
             mDroneLocationLng = 180.0;
+        }
+        if (mRemoteController != null) {
+            mRemoteController.setHardwareStateUpdateCallback(null);
         }
     }
 
@@ -246,6 +252,7 @@ public class MainActivity extends AppCompatActivity
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
+//        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

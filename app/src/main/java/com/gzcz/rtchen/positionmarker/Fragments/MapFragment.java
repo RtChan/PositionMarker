@@ -242,8 +242,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         String s = mDotName.getText().toString();
 
         if (Double.isNaN(MainActivity.getDroneLocationLat()) || Double.isNaN(MainActivity.getDroneLocationLat())) {
-            //TODO:测试用屏蔽
-//            Toast.makeText(getContext(), "无人机无GPS信号！", Toast.LENGTH_SHORT).show();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "无人机无GPS信号！", Toast.LENGTH_SHORT).show();
+                }
+            });
             return;
         }
         if (s.isEmpty()) s = "null";
@@ -270,16 +274,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
                 mTextView.setText(sb.toString());
             }
         });
-
-//
-//        if(QRcodebuf != "")
-//        {
-//            QRcodebuf = (QRcodebuf + "\r\n");
-//        }
-
-//        String QRcodelatbuf = df.format(mDroneLocationLat);
-//        String QRcodelngbuf = df.format(mDroneLocationLng);
-//        QRcodebuf = (QRcodebuf + QRcodelatbuf + " " + QRcodelngbuf);
     }
 
     @Override
@@ -407,26 +401,39 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
                 });
             }
         } else {
-            return false;
+            ;
         }
         //当连接的产品有遥控器时
         if (mRemoteController != null) {
             if (b) {
-                Toast.makeText(getActivity(), "RC ok", Toast.LENGTH_SHORT).show();
                 mRemoteController.setHardwareStateUpdateCallback(new DJIRemoteController.RCHardwareStateUpdateCallback() {
                     @Override
                     public void onHardwareStateUpdate(DJIRemoteController djiRemoteController, DJIRemoteController.DJIRCHardwareState djircHardwareState) {
-//                        Toast.makeText(getActivity(), "inCallback", Toast.LENGTH_SHORT).show();
                         if (djircHardwareState.customButton1.buttonDown) {
-//                            Toast.makeText(getActivity(), "左键按下：切换图传", Toast.LENGTH_SHORT).show();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), "左键按下：切换图传", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             adjustFpvSize();
                         }
                         if (djircHardwareState.customButton2.buttonDown) {
                             if (mAddPoint.isEnabled()) {
-//                                Toast.makeText(getActivity(), "右键按下：添加点", Toast.LENGTH_SHORT).show();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "右键按下：添加点", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                                 addThePoint();
                             } else {
-//                                Toast.makeText(getActivity(), "未能使用该按钮！", Toast.LENGTH_SHORT).show();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "GPS未准备好！", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
                         }
                     }
@@ -436,9 +443,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             }
             return true;
         } else {
-            Toast.makeText(getActivity(), "RC off", Toast.LENGTH_SHORT).show();
-            return false;
+            ;
         }
+        return false;
     }
 
     public void onButtonPressed(Uri uri) {
@@ -446,6 +453,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
             mListener.onFragmentInteraction(uri);
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -458,12 +466,18 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         }
     }
 
+
+
     @Override
     public void onDetach() {
         Log.d("WHEN", "onDetach: MapF");
         super.onDetach();
         mListener = null;
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
         setDJICallback(false);
     }
 
