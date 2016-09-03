@@ -4,21 +4,21 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_project"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_border_color_black_24dp"
             android:title="@string/menu_project"
             android:checked="true"/>
         <item
             android:id="@+id/nav_map"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_flight_black_24dp"
             android:title="@string/menu_map" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="N/A" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="N/A" />
+        <!--<item-->
+            <!--android:id="@+id/nav_slideshow"-->
+            <!--android:icon="@drawable/ic_menu_slideshow"-->
+            <!--android:title="N/A" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_manage"-->
+            <!--android:icon="@drawable/ic_menu_manage"-->
+            <!--android:title="N/A" />-->
     </group>
 
     <item android:title="Communicate">
@@ -26,11 +26,11 @@
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="N/A" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="N/A" />
+                android:title="@string/menu_about" />
+            <!--<item-->
+                <!--android:id="@+id/nav_send"-->
+                <!--android:icon="@drawable/ic_menu_send"-->
+                <!--android:title="N/A" />-->
         </menu>
     </item>
 
