@@ -1,6 +1,7 @@
 package com.gzcz.rtchen.positionmarker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -13,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Rt Chen on 2016/8/23.
@@ -26,6 +28,7 @@ public class DataManager {
     private ArrayList<String> mProjectsList = null;
     private ArrayList<PositionPoint> mPointsList = null;
     private ArrayList<PositionPointView> mPointViewsList = null;
+    private HashMap<String ,Integer> mDotNameNumberList = null;
     private String mCurrentProject = new String();
 
     private int mLastNum;
@@ -324,11 +327,20 @@ public class DataManager {
         String currentDotName = mPointsList.get(0).getDotName();
 
         for (PositionPoint p : mPointsList) {
-            if (!p.getDotName().equals(currentDotName)) {   // 判断点名是否改变
-                currentDotNum = 0;
-                currentDotName = p.getDotName();
+//            if (!p.getDotName().equals(currentDotName)) {   // 判断点名是否改变
+//                currentDotNum = 0;
+//                currentDotName = p.getDotName();
+//            }
+
+            currentDotName = p.getDotName();
+            if (!mDotNameNumberList.containsKey(currentDotName)){
+                mDotNameNumberList.put(currentDotName,1);
+            } else {
+                currentDotNum = mDotNameNumberList.get(currentDotName);
+                mDotNameNumberList.put(currentDotName, ++currentDotNum);
             }
-            mPointViewsList.add(new PositionPointView(++currentNum, ++currentDotNum, false, p));
+
+            mPointViewsList.add(new PositionPointView(currentNum, currentDotNum, false, p));
         }
 
         mLastNum = currentNum;

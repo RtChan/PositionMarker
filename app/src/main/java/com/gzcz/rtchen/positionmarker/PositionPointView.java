@@ -3,6 +3,8 @@ package com.gzcz.rtchen.positionmarker;
 import com.amap.api.maps2d.CoordinateConverter;
 import com.amap.api.maps2d.model.LatLng;
 
+import java.util.HashMap;
+
 /**
  * Created by Rt Chen on 2016/8/26.
  */
