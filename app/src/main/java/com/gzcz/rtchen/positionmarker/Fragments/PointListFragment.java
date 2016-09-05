@@ -91,29 +91,6 @@ public class PointListFragment extends Fragment {
         }
     }
 
-//    public ArrayList<PositionPointView> convertList(ArrayList<PositionPoint> src) {
-//        if (null == src) return null;
-//
-//        ArrayList<PositionPointView> ret = new ArrayList<PositionPointView>();
-//        if (src.isEmpty()) return ret;
-//
-//        int currentNum = 0;
-//        int currentDotNum = 0;
-//        String currentDotName = src.get(0).getDotName();
-//
-//        for (PositionPoint p : src) {
-//            if (!p.getDotName().equals(currentDotName)) {
-//                currentDotNum = 0;
-//                currentDotName = p.getDotName();
-//            }
-//            ret.add(new PositionPointView(++currentNum, ++currentDotNum, false, p));
-//        }
-//
-//        // TODO:出错处理
-//        //return null;
-//        return ret;
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
