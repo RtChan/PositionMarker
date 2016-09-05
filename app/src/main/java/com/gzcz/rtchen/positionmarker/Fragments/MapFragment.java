@@ -146,7 +146,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         Matrix matrix = new Matrix();
-        matrix.postRotate(45);
+        matrix.postRotate((float) MainActivity.getmDroneHeardDirection());
         Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
 //        飞机图标旋转
 
