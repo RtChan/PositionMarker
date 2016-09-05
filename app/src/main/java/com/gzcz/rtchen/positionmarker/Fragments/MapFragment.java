@@ -1,11 +1,7 @@
 package com.gzcz.rtchen.positionmarker.Fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -142,19 +138,19 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         LatLng desLatLng = Utils.GPStoAMAP(MainActivity.getDroneLocationLat(), MainActivity.getDroneLocationLng());
 
 //        飞机图标旋转
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.aircraft);
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        Matrix matrix = new Matrix();
-        matrix.postRotate((float) MainActivity.getmDroneHeardDirection());
-        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.aircraft);
+//        int width = bitmap.getWidth();
+//        int height = bitmap.getHeight();
+//        Matrix matrix = new Matrix();
+//        matrix.postRotate((float) MainActivity.getmDroneHeardDirection());
+//        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
 //        飞机图标旋转
 
         //Create MarkerOptions object
         final MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(desLatLng);
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap));
-//        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.aircraft));
+//        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.aircraft));
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -304,10 +300,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         mView = inflater.inflate(R.layout.map_fragment, container, false);
 
         mButtonLocate = (Button) mView.findViewById(R.id.locate);
-        if (null == MainActivity.dm.getCurrentProjectName() || MainActivity.dm.getCurrentProjectName().isEmpty())
-            mButtonLocate.setEnabled(false);
-        else
-            mButtonLocate.setEnabled(true);
+//        if (null == MainActivity.dm.getCurrentProjectName() || MainActivity.dm.getCurrentProjectName().isEmpty())
+//            mButtonLocate.setEnabled(false);
+//        else
+//            mButtonLocate.setEnabled(true);
         mButtonLocate.setOnClickListener(this);
         mMapView = (MapView) mView.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
