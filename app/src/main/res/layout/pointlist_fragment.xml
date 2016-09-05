@@ -55,13 +55,10 @@
             android:layout_height="wrap_content"
             android:text="生成二维码"/>
         <Button
+            android:id="@+id/btn_del"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="删除选中项"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="保存修改"/>
         <Button
             android:id="@+id/btn_selectall"
             android:layout_width="wrap_content"

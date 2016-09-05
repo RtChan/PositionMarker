@@ -1,6 +1,7 @@
 package com.gzcz.rtchen.positionmarker;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class MyListViewAdapter extends BaseAdapter {
         @Override
         public void onClick(View v) {
             mData.get(pos).setChecked(!mData.get(pos).isChecked());
+            Log.d("Adapter", "onClick: " + String.valueOf(pos));
         }
     }
 
@@ -73,7 +75,10 @@ public class MyListViewAdapter extends BaseAdapter {
         ViewHolder mHolder = null;
         CheckBoxOnClickListener myListener = null;
 
-        if (convertView == null) {
+        /*
+         * 此处不能按照常规getTag，否则列表滚动或者变动后，无法接收新的响应
+         */
+//        if (convertView == null) {
             mHolder = new ViewHolder();
             myListener = new CheckBoxOnClickListener(position);
             convertView=layoutInflater.inflate(R.layout.my_listview, null);
@@ -85,9 +90,9 @@ public class MyListViewAdapter extends BaseAdapter {
             mHolder.longitude = (TextView) convertView.findViewById(R.id.mtv_longitude);
             mHolder.cb = (CheckBox) convertView.findViewById(R.id.mcb);
             convertView.setTag(mHolder);
-        } else {
-            mHolder = (ViewHolder) convertView.getTag();
-        }
+//        } else {
+//            mHolder = (ViewHolder) convertView.getTag();
+//        }
 
         DecimalFormat df = new DecimalFormat("#.0000");
 

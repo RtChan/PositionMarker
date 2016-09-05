@@ -29,6 +29,14 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- 适配屏幕宽度用 -->
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
     <application
         android:name=".DjiSdkApplication"
         android:allowBackup="true"
@@ -62,14 +70,6 @@
         </activity>
 
         <service android:name="dji.sdk.SDKManager.DJIGlobalService" />
-
-        <!-- 适配屏幕宽度用 -->
-        <supports-screens
-            android:anyDensity="true"
-            android:largeScreens="true"
-            android:normalScreens="true"
-            android:resizeable="true"
-            android:smallScreens="true" />
 
         <activity
             android:name=".MainActivity"

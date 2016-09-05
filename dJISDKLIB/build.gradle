@@ -1,14 +1,20 @@
 apply plugin: 'com.android.library'
 
 android {
+    signingConfigs {
+        Chengzhi {
+            keyAlias 'Chengzhi'
+            keyPassword 'Chengzhi'
+            storeFile file('./Chengzhi')
+            storePassword 'Chengzhi'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "19.1.0"
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 17
     }
-
     buildTypes {
         release {
             minifyEnabled false

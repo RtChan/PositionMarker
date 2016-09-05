@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
@@ -212,6 +213,13 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setTitle("关于");
+//            builder.setPositiveButton("知道了", null);
+//            builder.show();
+
+            Toast.makeText(MainActivity.this, "成至智能科技有限公司", Toast.LENGTH_SHORT).show();
+
             return true;
         }
 
@@ -230,20 +238,13 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = ProjectFragment.class;
         } else if (id == R.id.nav_map) {
             fragmentClass = MapFragment.class;
+        } else if (id == R.id.nav_share) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle("成至智能科技").setPositiveButton("知道了",null);
+            builder.show();
+            return false;
         } else {
             fragmentClass = ProjectFragment.class;
         }
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
