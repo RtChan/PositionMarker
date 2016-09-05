@@ -1,7 +1,6 @@
 package com.gzcz.rtchen.positionmarker;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -84,17 +83,33 @@ public class DataManager {
         }
     }
 
+    private void setOemActivationKey(String imei) {
+        HashMap<String, String> oem = new HashMap<String, String>();
+        oem.put("868180022671821","854ae07ec3b521a8c5fffcc437b14cbf");  // 双卡手机1：IMEI1
+        oem.put("868180023292080","d4f17cfbdec0fd389ba93574c20c78aa");  // 双卡手机1：IMEI2
+        oem.put("359700200053276","610199b92f4b6d500c7d3458bdd99a84");  // 设备1
+
+        oem.put("357747051493810","06bf517bdac9e06022ccb06bbf93a2fa");
+
+        if (oem.containsKey(imei)) {
+            setActivationKey(oem.get(imei));
+        }
+    }
+
     public boolean isActivated(String imei) {
+        setOemActivationKey(imei);
+
         String StoredKey = getActivationKey();
         if (null == StoredKey) {
             return false;
         }
 
         long Imei = Long.valueOf(imei);
-        Imei += 38608338;
+
+        // TEL + 2016 + 433
+        Imei |= 386083382016433L;
         StringBuilder src = new StringBuilder();
         src.append(String.valueOf(Imei));
-        src.append("433");
 
         byte[] hash;
         try {
@@ -114,7 +129,7 @@ public class DataManager {
                hex.append(Integer.toHexString(b & 0xFF));
         }
 
-        Log.d("LOGIN", "isActivated: " + hex.toString());
+//        Log.d("LOGIN", "357747051493810 " + "isActivated: " + hex.toString());
 
         if (StoredKey.equalsIgnoreCase(hex.toString())) {
             return true;
@@ -327,20 +342,27 @@ public class DataManager {
         String currentDotName = mPointsList.get(0).getDotName();
 
         for (PositionPoint p : mPointsList) {
-//            if (!p.getDotName().equals(currentDotName)) {   // 判断点名是否改变
-//                currentDotNum = 0;
-//                currentDotName = p.getDotName();
-//            }
-
-            currentDotName = p.getDotName();
-            if (!mDotNameNumberList.containsKey(currentDotName)){
-                mDotNameNumberList.put(currentDotName,1);
-            } else {
-                currentDotNum = mDotNameNumberList.get(currentDotName);
-                mDotNameNumberList.put(currentDotName, ++currentDotNum);
+            if (!p.getDotName().equals(currentDotName)) {   // 判断点名是否改变
+                currentDotNum = 0;
+                currentDotName = p.getDotName();
             }
 
-            mPointViewsList.add(new PositionPointView(currentNum, currentDotNum, false, p));
+            /*
+             * 续编序号
+             */
+//            currentDotName = p.getDotName();
+//            if (!mDotNameNumberList.containsKey(currentDotName)){
+//                mDotNameNumberList.put(currentDotName,1);
+//            } else {
+//                currentDotNum = mDotNameNumberList.get(currentDotName);
+//                mDotNameNumberList.put(currentDotName, ++currentDotNum);
+//            }
+
+            /*
+             * 普通序号
+             */
+            currentDotNum += 1;
+            mPointViewsList.add(new PositionPointView(++currentNum, currentDotNum, false, p));
         }
 
         mLastNum = currentNum;

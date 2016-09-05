@@ -199,6 +199,18 @@ public class ProjectFragment extends Fragment
     public void onClick(View v) {
         String List_view_add_buf = edit_view_prj.getText().toString();
 
+        if (List_view_add_buf.matches(".*/.*")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("工程名非法");
+            builder.setMessage("工程名不能含有 / 字符！");
+            builder.setPositiveButton("确认", null);
+            builder.show();
+
+            edit_view_prj.setText("");
+
+            return;
+        }
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss ");
         Date curDate = new Date(System.currentTimeMillis());
         String str = formatter.format(curDate);
