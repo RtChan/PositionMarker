@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        Chengzhi {
+            storeFile file('./Chengzhi')
+            keyAlias 'Chengzhi'
+            keyPassword 'Chengzhi'
+            storePassword 'Chengzhi'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
-
     defaultConfig {
         applicationId "com.gzcz.rtchen.positionmarker"
         minSdkVersion 19
@@ -13,8 +20,12 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            //Zipalign优化
+            zipAlignEnabled true
         }
     }
 }

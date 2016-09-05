@@ -290,6 +290,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, AMap.
         mView = inflater.inflate(R.layout.map_fragment, container, false);
 
         mButtonLocate = (Button) mView.findViewById(R.id.locate);
+        if (null == MainActivity.dm.getCurrentProjectName())
+            mButtonLocate.setEnabled(false);
+        else
+            mButtonLocate.setEnabled(true);
         mButtonLocate.setOnClickListener(this);
         mMapView = (MapView) mView.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
