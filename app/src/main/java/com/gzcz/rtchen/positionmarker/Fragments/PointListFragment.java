@@ -135,7 +135,6 @@ public class PointListFragment extends Fragment {
 
         mAdapter = new MyListViewAdapter(getContext(), mList);
         mListView.setAdapter(mAdapter);
-        //mAdapter.refresh(mList);
 
         Button btn_del = (Button) mView.findViewById(R.id.btn_del);
         btn_del.setOnClickListener(new btnDelOnClickListener());
