@@ -137,6 +137,9 @@ public class PointListFragment extends Fragment {
         mListView.setAdapter(mAdapter);
         //mAdapter.refresh(mList);
 
+        Button btn_del = (Button) mView.findViewById(R.id.btn_del);
+        btn_del.setOnClickListener(new btnDelOnClickListener());
+
         qrImageView = (ImageView)mView.findViewById(R.id.iv_qr_image);
         Button btn_qrcode = (Button) mView.findViewById(R.id.btn_qr);
         btn_qrcode.setOnClickListener(new btnQrcodeOnClickListener());
@@ -150,6 +153,20 @@ public class PointListFragment extends Fragment {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.pointlist_fragment, container, false);
         return mView;
+    }
+
+    class btnDelOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            for (int i = mList.size()-1; i>=0; --i) {
+                if (mList.get(i).isChecked()) {
+                    MainActivity.dm.removePoint(i);
+                }
+            }
+
+            mList = MainActivity.dm.getPointViewsList();
+            mAdapter.refresh(mList);
+        }
     }
 
     class btnSelectallOnClickListener implements View.OnClickListener {
