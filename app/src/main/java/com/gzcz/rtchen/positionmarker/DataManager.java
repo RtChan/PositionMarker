@@ -60,7 +60,7 @@ public class DataManager {
     }
 
     private void initActivation(){
-        SharedPreferences sp = mContext.getSharedPreferences(PROJECTLISTFILENAME, Context.MODE_PRIVATE);
+        SharedPreferences sp = mContext.getSharedPreferences(ACTIVATIONFILENAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
 
         String key = sp.getString("Key", null);
@@ -71,7 +71,7 @@ public class DataManager {
     }
 
     public void setActivationKey(String newKey) {
-        SharedPreferences sp = mContext.getSharedPreferences(PROJECTLISTFILENAME, Context.MODE_PRIVATE);
+        SharedPreferences sp = mContext.getSharedPreferences(ACTIVATIONFILENAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
 
         String key = sp.getString("Key", null);
@@ -139,7 +139,7 @@ public class DataManager {
     }
 
     private String getActivationKey() {
-        SharedPreferences sp = mContext.getSharedPreferences(PROJECTLISTFILENAME, Context.MODE_PRIVATE);
+        SharedPreferences sp = mContext.getSharedPreferences(ACTIVATIONFILENAME, Context.MODE_PRIVATE);
 
         String key = sp.getString("Key", null);
         if (null == key) {
