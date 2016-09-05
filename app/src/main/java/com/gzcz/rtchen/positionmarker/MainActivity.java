@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
 
 
     /* 声明大疆SDK控件 */
-    static public double mDroneLocationLat = 181, mDroneLocationLng = 181;
+    static public double mDroneLocationLat = 181, mDroneLocationLng = 181, mDroneHeardDirection = 0;
     DJIFlightController mFlightController;
     DJIRemoteController mRemoteController;
 
@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity
 
     static public double getDroneLocationLng() {
         return mDroneLocationLng;
+    }
+
+    static public double getmDroneHeardDirection() {
+        return mDroneHeardDirection;
     }
 
     /* 实例化 静态 DataManager */
@@ -170,11 +174,13 @@ public class MainActivity extends AppCompatActivity
                 public void onResult(DJIFlightControllerDataType.DJIFlightControllerCurrentState state) {
                     mDroneLocationLat = state.getAircraftLocation().getLatitude();
                     mDroneLocationLng = state.getAircraftLocation().getLongitude();
+                    mDroneHeardDirection = state.getAircraftHeadDirection();
                 }
             });
         } else {
             mDroneLocationLat = 180.0;
             mDroneLocationLng = 180.0;
+            mDroneHeardDirection = 0;
         }
         if (mRemoteController != null) {
             mRemoteController.setHardwareStateUpdateCallback(null);
