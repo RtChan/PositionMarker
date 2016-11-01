@@ -17,7 +17,7 @@
 
     <!-- nav_header 原素 -->
     <string name="nav_hearder_application_name">坐标记录器</string>
-    <string name="nav_hearder_company">成至智能科技</string>
+    <string name="nav_hearder_company">广州市任贤电子科技有限公司</string>
 
     <!-- ProjectFragment 元素 -->
     <string name="btn_add_prj">添加工程</string>

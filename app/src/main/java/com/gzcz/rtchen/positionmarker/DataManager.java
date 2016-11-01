@@ -85,11 +85,13 @@ public class DataManager {
 
     private void setOemActivationKey(String imei) {
         HashMap<String, String> oem = new HashMap<String, String>();
+        oem.put("A000005922DD84" ,"2029460ccf50536167ae1c3f6014916c");  // 双卡手机1：MEID
         oem.put("868180022671821","854ae07ec3b521a8c5fffcc437b14cbf");  // 双卡手机1：IMEI1
         oem.put("868180023292080","d4f17cfbdec0fd389ba93574c20c78aa");  // 双卡手机1：IMEI2
         oem.put("359700200053276","610199b92f4b6d500c7d3458bdd99a84");  // 设备1
 
         oem.put("357747051493810","06bf517bdac9e06022ccb06bbf93a2fa");
+        oem.put("866361029386710","bde41bfa4f4374f2610563e85dbd4894");
 
         if (oem.containsKey(imei)) {
             setActivationKey(oem.get(imei));
@@ -104,7 +106,13 @@ public class DataManager {
             return false;
         }
 
-        long Imei = Long.valueOf(imei);
+        long Imei = 0;
+        try {
+            Imei = Long.valueOf(imei);
+        } catch (NumberFormatException ne) {
+            Imei = Long.valueOf(imei,16);
+        }
+//        Imei = 866361029386710L;
 
         // TEL + 2016 + 433
         Imei |= 386083382016433L;
